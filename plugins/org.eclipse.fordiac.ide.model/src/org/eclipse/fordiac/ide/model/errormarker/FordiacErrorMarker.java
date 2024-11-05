@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.fordiac.ide.model.libraryElement.Connection;
 import org.eclipse.fordiac.ide.model.libraryElement.ErrorMarkerInterface;
 import org.eclipse.fordiac.ide.model.libraryElement.FBNetworkElement;
+import org.eclipse.fordiac.ide.model.libraryElement.LibraryElement;
 import org.eclipse.fordiac.ide.model.libraryElement.LibraryElementPackage;
 import org.eclipse.fordiac.ide.model.libraryElement.Value;
 import org.eclipse.fordiac.ide.model.typelibrary.TypeEntry;
@@ -231,7 +232,15 @@ public final class FordiacErrorMarker {
 	 * @see Diagnostic#getData()
 	 * @implNote This can be a resource-intensive operation since it may force to
 	 *           load the target file.
+	 * @deprecated The "editable" type may not be identical to the type currently
+	 *             used in editors due to automatic reload from disk on changes.
+	 *             However, it was often used this way. In the future, use
+	 *             {@link #getTargetRelative(IMarker, EObject)} and either get a
+	 *             private copy to edit the type via {@link #copyType()} or get the
+	 *             type directly from an editor via
+	 *             {@code Adapters.adapt(editor, LibraryElement.class)}.
 	 */
+	@Deprecated(since = "3.0.0", forRemoval = true)
 	public static EObject getTargetEditable(final IMarker marker) {
 		final URI targetUri = FordiacErrorMarker.getTargetUri(marker);
 		if (targetUri != null) {
@@ -258,10 +267,11 @@ public final class FordiacErrorMarker {
 	 * Get the originating model element relative to an existing root object.
 	 *
 	 * @param marker The marker
+	 * @param root   The root element
 	 * @return The target or null if no valid attribute is present.
 	 * @see Diagnostic#getData()
 	 */
-	public static EObject getTargetRelative(final IMarker marker, final EObject root) {
+	public static EObject getTargetRelative(final IMarker marker, final LibraryElement root) {
 		final URI targetUri = FordiacErrorMarker.getTargetUri(marker);
 		if (targetUri != null) {
 			final SegmentSequence segments = SegmentSequence.create("/", targetUri.fragment()); //$NON-NLS-1$

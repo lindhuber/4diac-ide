@@ -17,17 +17,22 @@
 package org.eclipse.fordiac.ide.test.ui.helpers;
 
 import static org.eclipse.swtbot.swt.finder.waits.Conditions.treeItemHasNode;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.PolylineConnection;
+import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.fordiac.ide.application.editparts.FBEditPart;
 import org.eclipse.fordiac.ide.test.ui.swtbot.SWT4diacGefBot;
 import org.eclipse.fordiac.ide.test.ui.swtbot.SWTBot4diacGefEditor;
 import org.eclipse.fordiac.ide.test.ui.swtbot.SWTBot4diacGefViewer;
+import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.swt.graphics.Point;
@@ -40,11 +45,14 @@ import org.hamcrest.Description;
 
 public class SWTBotFB {
 
+	static final int TOLERANCE_SNAP_TO_GRID = 15;
+
 	private final SWT4diacGefBot bot;
 
 	@SuppressWarnings("static-access")
 	public SWTBotFB(final SWT4diacGefBot bot) {
 		this.bot = bot;
+		// TODO editor vom bot holen und field
 	}
 
 	/**
@@ -169,6 +177,135 @@ public class SWTBotFB {
 		assertNotNull(fbBounds);
 		figure.translateToAbsolute(fbBounds);
 		return fbBounds;
+	}
+
+	/**
+	 *
+	 * @param editor
+	 * @param fBname
+	 * @return
+	 */
+	public Rectangle getBoundsOfFBWithTolerance(final SWTBotGefEditor editor, final String fBname) {
+		return getBoundsOfFB(editor, fBname).expand(new Insets(TOLERANCE_SNAP_TO_GRID));
+	}
+
+	/**
+	 * Moves a Function Block to the given position
+	 *
+	 * @param editor
+	 * @param fBname  The FB that should be moved
+	 * @param toPoint The new position of the FB
+	 * @return
+	 */
+	public SWTBotFB moveSingleFB(SWTBotGefEditor editor, final String fBname, final Point toPoint) {
+		assertNotNull(editor);
+		assertNotNull(editor.getEditPart(fBname));
+		editor = selectFBWithFBNameInEditor((SWTBot4diacGefEditor) editor, fBname);
+		final SWTBotGefEditPart fbEditPart = editor.getEditPart(fBname).parent();
+		assertNotNull(fbEditPart);
+
+		// move FB, get bounds of FB and expand bounds to have a tolerance for the grid
+		// alignment when checking the new position
+		editor.drag(fbEditPart, toPoint.x, toPoint.y);
+		final Rectangle toPosition = getBoundsOfFB(editor, fBname);
+		final Rectangle expandedBounds = toPosition.expand(new Insets(TOLERANCE_SNAP_TO_GRID));
+		assertTrue(expandedBounds.contains(toPoint.x, toPoint.y));
+		return this;
+	}
+
+	/**
+	 *
+	 * @param editor
+	 * @param rectangle
+	 * @return this
+	 */
+	public SWTBotFB selectViaRectangle(final SWTBot4diacGefEditor editor, final Rectangle rectangle) {
+		editor.drag(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+		assertDoesNotThrow(editor::waitForSelectedFBEditPart);
+		assertFalse(editor.selectedEditParts().isEmpty());
+		return this;
+	}
+
+	/**
+	 *
+	 * @param editor
+	 * @param rectangle
+	 * @param deltaPosition
+	 * @return this
+	 */
+	public SWTBotFB moveViaRectangle(final SWTBot4diacGefEditor editor, final Rectangle rectangle,
+			final Point deltaPosition) {
+		selectViaRectangle(editor, rectangle);
+
+		final List<org.eclipse.draw2d.geometry.Point> startPositions = getPositionOfSelectedElements(editor);
+
+		// the first elements top left corner is chosen as click point for the shift of
+		// all selected elements
+		editor.drag(startPositions.get(0).x, startPositions.get(0).y, startPositions.get(0).x + deltaPosition.x,
+				startPositions.get(0).y + deltaPosition.y);
+
+		// check if translation worked correctly and wait a bit till selected elements
+		// are updated
+		bot.sleep(500);
+		final List<org.eclipse.draw2d.geometry.Point> endPositions = getPositionOfSelectedElements(editor);
+
+		for (int i = 0; i < startPositions.size(); i++) {
+			final org.eclipse.draw2d.geometry.Point start = startPositions.get(i).getCopy();
+			final org.eclipse.draw2d.geometry.Point end = endPositions.get(i).getCopy();
+			final double distance = start.translate(deltaPosition.x, deltaPosition.y).getDistance(end);
+			assertTrue(distance <= TOLERANCE_SNAP_TO_GRID);
+		}
+		return this;
+	}
+
+	/**
+	 *
+	 * @param editor
+	 * @return
+	 */
+	private static List<org.eclipse.draw2d.geometry.Point> getPositionOfSelectedElements(
+			final SWTBot4diacGefEditor editor) {
+		return editor.selectedEditParts().stream() //
+				.map(SWTBotGefEditPart::part) //
+				.filter(GraphicalEditPart.class::isInstance).map(GraphicalEditPart.class::cast) //
+				.map(gep -> {
+					final IFigure figure = gep.getFigure();
+					final org.eclipse.draw2d.geometry.Point topLeft = figure.getBounds().getTopLeft();
+					figure.translateToAbsolute(topLeft);
+					return topLeft;
+				}).toList();
+	}
+
+	public void checkIfMovingFBWasCorrect(final SWTBot4diacGefEditor editor, final String fbName,
+			final Point originalPos, final Point translation) {
+		final Rectangle fbBounds = getBoundsOfFBWithTolerance(editor, fbName);
+		final int absPos2Fb2X = originalPos.x + translation.x;
+		final int absPos2Fb2Y = originalPos.y + translation.y;
+		assertTrue(fbBounds.contains(absPos2Fb2X, absPos2Fb2Y));
+	}
+
+	@SuppressWarnings("static-method")
+	public void checkIfMovingConnectionWasCorrect(final SWTBot4diacGefEditor editor,
+			final org.eclipse.draw2d.geometry.Point origStartPointConnection,
+			final org.eclipse.draw2d.geometry.Point origEndPointConnection, final ConnectionEditPart connection,
+			final Point translation) {
+
+		final PolylineConnection polyLineConnection = (PolylineConnection) connection.getFigure();
+
+		assertNotNull(connection);
+		final org.eclipse.draw2d.geometry.Point newStartPointConnection = polyLineConnection.getPoints()
+				.getFirstPoint();
+		final org.eclipse.draw2d.geometry.Point newEndPointConnection = polyLineConnection.getPoints().getLastPoint();
+
+		assertTrue(Math.abs(origStartPointConnection.x) - Math.abs(newStartPointConnection.x)
+				- Math.abs(translation.x) <= TOLERANCE_SNAP_TO_GRID);
+		assertTrue(Math.abs(origStartPointConnection.y) - Math.abs(newStartPointConnection.y)
+				- Math.abs(translation.y) <= TOLERANCE_SNAP_TO_GRID);
+		assertTrue(Math.abs(origEndPointConnection.x) - Math.abs(newEndPointConnection.x)
+				- Math.abs(translation.x) <= TOLERANCE_SNAP_TO_GRID);
+		assertTrue(Math.abs(origEndPointConnection.y) - Math.abs(newEndPointConnection.y)
+				- Math.abs(translation.y) <= TOLERANCE_SNAP_TO_GRID);
+
 	}
 
 }
