@@ -367,6 +367,9 @@ public enum LibraryManager {
 			return;
 		}
 		final Manifest projManifest = ManifestHelper.getOrCreateProjectManifest(project);
+		if (projManifest == null) {
+			return;
+		}
 		final IFolder libDirectory = project.getFolder(TYPE_LIB_FOLDER_NAME)
 				.getFolder(libManifest.getProduct().getSymbolicName());
 
@@ -496,12 +499,14 @@ public enum LibraryManager {
 		case final IFolder f -> true;
 		case final IFile file -> {
 			final TypeEntry entry = TypeEntryFactory.INSTANCE.createTypeEntry(file);
-			final TypeEntry oldEntry = cachedTypes.get(entry.getFullTypeName());
-			if (oldEntry != null) {
-				FordiacResourceChangeListener.updateTypeEntry(file, oldEntry);
-				cachedTypes.remove(entry.getFullTypeName());
-			} else {
-				typeLibrary.createTypeEntry(file);
+			if (entry != null) {
+				final TypeEntry oldEntry = cachedTypes.get(entry.getFullTypeName());
+				if (oldEntry != null) {
+					FordiacResourceChangeListener.updateTypeEntry(file, oldEntry);
+					cachedTypes.remove(entry.getFullTypeName());
+				} else {
+					typeLibrary.createTypeEntry(file);
+				}
 			}
 			yield false;
 		}
