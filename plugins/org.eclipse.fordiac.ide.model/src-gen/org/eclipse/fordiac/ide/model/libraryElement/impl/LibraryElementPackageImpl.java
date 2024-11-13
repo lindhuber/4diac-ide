@@ -557,6 +557,20 @@ public class LibraryElementPackageImpl extends EPackageImpl implements LibraryEl
 	private EClass serviceInterfaceFBTypeEClass = null;
 
 	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass simpleECActionEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass simpleECStateEClass = null;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -870,11 +884,12 @@ public class LibraryElementPackageImpl extends EPackageImpl implements LibraryEl
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	public EReference getAdapterDeclaration_AdapterNetworkFB() {
+	public EReference getAdapterDeclaration_InterfaceOnlyAdapterFB() {
 		return (EReference)adapterDeclarationEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -2374,60 +2389,6 @@ public class LibraryElementPackageImpl extends EPackageImpl implements LibraryEl
 	 */
 	@Override
 	public EReference getInterfaceList_Plugs() {
-		return (EReference)interfaceListEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getInterfaceList_Sockets() {
-		return (EReference)interfaceListEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getInterfaceList_EventInputs() {
-		return (EReference)interfaceListEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getInterfaceList_EventOutputs() {
-		return (EReference)interfaceListEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getInterfaceList_InputVars() {
-		return (EReference)interfaceListEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getInterfaceList_OutputVars() {
-		return (EReference)interfaceListEClass.getEStructuralFeatures().get(5);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EReference getInterfaceList_InOutVars() {
 		return (EReference)interfaceListEClass.getEStructuralFeatures().get(6);
 	}
 
@@ -2436,8 +2397,62 @@ public class LibraryElementPackageImpl extends EPackageImpl implements LibraryEl
 	 * @generated
 	 */
 	@Override
-	public EReference getInterfaceList_OutMappedInOutVars() {
+	public EReference getInterfaceList_Sockets() {
 		return (EReference)interfaceListEClass.getEStructuralFeatures().get(7);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getInterfaceList_EventInputs() {
+		return (EReference)interfaceListEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getInterfaceList_EventOutputs() {
+		return (EReference)interfaceListEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getInterfaceList_InputVars() {
+		return (EReference)interfaceListEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getInterfaceList_OutputVars() {
+		return (EReference)interfaceListEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getInterfaceList_InOutVars() {
+		return (EReference)interfaceListEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getInterfaceList_OutMappedInOutVars() {
+		return (EReference)interfaceListEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -3071,12 +3086,102 @@ public class LibraryElementPackageImpl extends EPackageImpl implements LibraryEl
 	}
 
 	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EClass getSimpleECAction() {
+		return simpleECActionEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getSimpleECAction_Algorithm() {
+		return (EAttribute)simpleECActionEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getSimpleECAction_Output() {
+		return (EReference)simpleECActionEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getSimpleECAction_SimpleECState() {
+		return (EReference)simpleECActionEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EClass getSimpleECState() {
+		return simpleECStateEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getSimpleECState_SimpleECActions() {
+		return (EReference)simpleECStateEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getSimpleECState_InputEvent() {
+		return (EReference)simpleECStateEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getSimpleECState_SimpleFBType() {
+		return (EReference)simpleECStateEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public EClass getSimpleFBType() {
 		return simpleFBTypeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getSimpleFBType_SimpleECStates() {
+		return (EReference)simpleFBTypeEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -3678,7 +3783,7 @@ public class LibraryElementPackageImpl extends EPackageImpl implements LibraryEl
 
 		adapterDeclarationEClass = createEClass(ADAPTER_DECLARATION);
 		createEReference(adapterDeclarationEClass, ADAPTER_DECLARATION__ADAPTER_FB);
-		createEReference(adapterDeclarationEClass, ADAPTER_DECLARATION__ADAPTER_NETWORK_FB);
+		createEReference(adapterDeclarationEClass, ADAPTER_DECLARATION__INTERFACE_ONLY_ADAPTER_FB);
 
 		adapterFBEClass = createEClass(ADAPTER_FB);
 		createEReference(adapterFBEClass, ADAPTER_FB__ADAPTER_DECL);
@@ -3899,14 +4004,14 @@ public class LibraryElementPackageImpl extends EPackageImpl implements LibraryEl
 		inputPrimitiveEClass = createEClass(INPUT_PRIMITIVE);
 
 		interfaceListEClass = createEClass(INTERFACE_LIST);
-		createEReference(interfaceListEClass, INTERFACE_LIST__PLUGS);
-		createEReference(interfaceListEClass, INTERFACE_LIST__SOCKETS);
 		createEReference(interfaceListEClass, INTERFACE_LIST__EVENT_INPUTS);
 		createEReference(interfaceListEClass, INTERFACE_LIST__EVENT_OUTPUTS);
 		createEReference(interfaceListEClass, INTERFACE_LIST__INPUT_VARS);
 		createEReference(interfaceListEClass, INTERFACE_LIST__OUTPUT_VARS);
 		createEReference(interfaceListEClass, INTERFACE_LIST__IN_OUT_VARS);
 		createEReference(interfaceListEClass, INTERFACE_LIST__OUT_MAPPED_IN_OUT_VARS);
+		createEReference(interfaceListEClass, INTERFACE_LIST__PLUGS);
+		createEReference(interfaceListEClass, INTERFACE_LIST__SOCKETS);
 		createEReference(interfaceListEClass, INTERFACE_LIST__ERROR_MARKER);
 
 		iTypedElementEClass = createEClass(ITYPED_ELEMENT);
@@ -4008,7 +4113,18 @@ public class LibraryElementPackageImpl extends EPackageImpl implements LibraryEl
 
 		serviceInterfaceFBTypeEClass = createEClass(SERVICE_INTERFACE_FB_TYPE);
 
+		simpleECActionEClass = createEClass(SIMPLE_EC_ACTION);
+		createEAttribute(simpleECActionEClass, SIMPLE_EC_ACTION__ALGORITHM);
+		createEReference(simpleECActionEClass, SIMPLE_EC_ACTION__OUTPUT);
+		createEReference(simpleECActionEClass, SIMPLE_EC_ACTION__SIMPLE_EC_STATE);
+
+		simpleECStateEClass = createEClass(SIMPLE_EC_STATE);
+		createEReference(simpleECStateEClass, SIMPLE_EC_STATE__SIMPLE_EC_ACTIONS);
+		createEReference(simpleECStateEClass, SIMPLE_EC_STATE__INPUT_EVENT);
+		createEReference(simpleECStateEClass, SIMPLE_EC_STATE__SIMPLE_FB_TYPE);
+
 		simpleFBTypeEClass = createEClass(SIMPLE_FB_TYPE);
+		createEReference(simpleFBTypeEClass, SIMPLE_FB_TYPE__SIMPLE_EC_STATES);
 
 		stAlgorithmEClass = createEClass(ST_ALGORITHM);
 
@@ -4207,6 +4323,7 @@ public class LibraryElementPackageImpl extends EPackageImpl implements LibraryEl
 		serviceSequenceEClass.getESuperTypes().add(this.getConfigurableObject());
 		serviceInterfaceEClass.getESuperTypes().add(this.getINamedElement());
 		serviceInterfaceFBTypeEClass.getESuperTypes().add(this.getFBType());
+		simpleECStateEClass.getESuperTypes().add(this.getINamedElement());
 		simpleFBTypeEClass.getESuperTypes().add(this.getBaseFBType());
 		stAlgorithmEClass.getESuperTypes().add(this.getTextAlgorithm());
 		stFunctionEClass.getESuperTypes().add(this.getTextFunction());
@@ -4234,8 +4351,8 @@ public class LibraryElementPackageImpl extends EPackageImpl implements LibraryEl
 		addEOperation(adapterConnectionEClass, this.getAdapterDeclaration(), "getAdapterDestination", 1, 1, IS_UNIQUE, IS_ORDERED); //$NON-NLS-1$
 
 		initEClass(adapterDeclarationEClass, AdapterDeclaration.class, "AdapterDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS); //$NON-NLS-1$
-		initEReference(getAdapterDeclaration_AdapterFB(), this.getAdapterFB(), null, "adapterFB", null, 0, 1, AdapterDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
-		initEReference(getAdapterDeclaration_AdapterNetworkFB(), this.getAdapterFB(), null, "adapterNetworkFB", null, 0, 1, AdapterDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
+		initEReference(getAdapterDeclaration_AdapterFB(), this.getAdapterFB(), null, "adapterFB", null, 0, 1, AdapterDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
+		initEReference(getAdapterDeclaration_InterfaceOnlyAdapterFB(), this.getAdapterFB(), null, "interfaceOnlyAdapterFB", null, 0, 1, AdapterDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 
 		addEOperation(adapterDeclarationEClass, this.getAdapterType(), "getType", 0, 1, IS_UNIQUE, IS_ORDERED); //$NON-NLS-1$
 
@@ -4911,14 +5028,14 @@ public class LibraryElementPackageImpl extends EPackageImpl implements LibraryEl
 		initEClass(inputPrimitiveEClass, InputPrimitive.class, "InputPrimitive", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS); //$NON-NLS-1$
 
 		initEClass(interfaceListEClass, InterfaceList.class, "InterfaceList", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS); //$NON-NLS-1$
-		initEReference(getInterfaceList_Plugs(), this.getAdapterDeclaration(), null, "plugs", null, 0, -1, InterfaceList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
-		initEReference(getInterfaceList_Sockets(), this.getAdapterDeclaration(), null, "sockets", null, 0, -1, InterfaceList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 		initEReference(getInterfaceList_EventInputs(), this.getEvent(), null, "eventInputs", null, 0, -1, InterfaceList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 		initEReference(getInterfaceList_EventOutputs(), this.getEvent(), null, "eventOutputs", null, 0, -1, InterfaceList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 		initEReference(getInterfaceList_InputVars(), this.getVarDeclaration(), null, "inputVars", null, 0, -1, InterfaceList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 		initEReference(getInterfaceList_OutputVars(), this.getVarDeclaration(), null, "outputVars", null, 0, -1, InterfaceList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 		initEReference(getInterfaceList_InOutVars(), this.getVarDeclaration(), null, "inOutVars", null, 0, -1, InterfaceList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 		initEReference(getInterfaceList_OutMappedInOutVars(), this.getVarDeclaration(), null, "outMappedInOutVars", null, 0, -1, InterfaceList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
+		initEReference(getInterfaceList_Plugs(), this.getAdapterDeclaration(), null, "plugs", null, 0, -1, InterfaceList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
+		initEReference(getInterfaceList_Sockets(), this.getAdapterDeclaration(), null, "sockets", null, 0, -1, InterfaceList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 		initEReference(getInterfaceList_ErrorMarker(), this.getErrorMarkerInterface(), null, "errorMarker", null, 0, -1, InterfaceList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 
 		op = addEOperation(interfaceListEClass, null, "getAllInterfaceElements", 1, 1, IS_UNIQUE, IS_ORDERED); //$NON-NLS-1$
@@ -5123,7 +5240,18 @@ public class LibraryElementPackageImpl extends EPackageImpl implements LibraryEl
 
 		initEClass(serviceInterfaceFBTypeEClass, ServiceInterfaceFBType.class, "ServiceInterfaceFBType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS); //$NON-NLS-1$
 
+		initEClass(simpleECActionEClass, SimpleECAction.class, "SimpleECAction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS); //$NON-NLS-1$
+		initEAttribute(getSimpleECAction_Algorithm(), theXMLTypePackage.getString(), "algorithm", null, 0, 1, SimpleECAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
+		initEReference(getSimpleECAction_Output(), this.getEvent(), null, "output", null, 0, 1, SimpleECAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
+		initEReference(getSimpleECAction_SimpleECState(), this.getSimpleECState(), this.getSimpleECState_SimpleECActions(), "simpleECState", null, 1, 1, SimpleECAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
+
+		initEClass(simpleECStateEClass, SimpleECState.class, "SimpleECState", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS); //$NON-NLS-1$
+		initEReference(getSimpleECState_SimpleECActions(), this.getSimpleECAction(), this.getSimpleECAction_SimpleECState(), "simpleECActions", null, 0, -1, SimpleECState.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
+		initEReference(getSimpleECState_InputEvent(), this.getEvent(), null, "inputEvent", null, 1, 1, SimpleECState.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
+		initEReference(getSimpleECState_SimpleFBType(), this.getSimpleFBType(), this.getSimpleFBType_SimpleECStates(), "simpleFBType", null, 1, 1, SimpleECState.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
+
 		initEClass(simpleFBTypeEClass, SimpleFBType.class, "SimpleFBType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS); //$NON-NLS-1$
+		initEReference(getSimpleFBType_SimpleECStates(), this.getSimpleECState(), this.getSimpleECState_SimpleFBType(), "simpleECStates", null, 1, -1, SimpleFBType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 
 		initEClass(stAlgorithmEClass, STAlgorithm.class, "STAlgorithm", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS); //$NON-NLS-1$
 
@@ -5727,22 +5855,6 @@ public class LibraryElementPackageImpl extends EPackageImpl implements LibraryEl
 			   "name", "declaration" //$NON-NLS-1$ //$NON-NLS-2$
 		   });
 		addAnnotation
-		  (getInterfaceList_Plugs(),
-		   source,
-		   new String[] {
-			   "kind", "element", //$NON-NLS-1$ //$NON-NLS-2$
-			   "name", "AdapterDeclaration", //$NON-NLS-1$ //$NON-NLS-2$
-			   "namespace", "##targetNamespace" //$NON-NLS-1$ //$NON-NLS-2$
-		   });
-		addAnnotation
-		  (getInterfaceList_Sockets(),
-		   source,
-		   new String[] {
-			   "kind", "element", //$NON-NLS-1$ //$NON-NLS-2$
-			   "name", "AdapterDeclaration", //$NON-NLS-1$ //$NON-NLS-2$
-			   "namespace", "##targetNamespace" //$NON-NLS-1$ //$NON-NLS-2$
-		   });
-		addAnnotation
 		  (getInterfaceList_EventInputs(),
 		   source,
 		   new String[] {
@@ -5772,6 +5884,22 @@ public class LibraryElementPackageImpl extends EPackageImpl implements LibraryEl
 		   new String[] {
 			   "kind", "element", //$NON-NLS-1$ //$NON-NLS-2$
 			   "name", "OutputVars", //$NON-NLS-1$ //$NON-NLS-2$
+			   "namespace", "##targetNamespace" //$NON-NLS-1$ //$NON-NLS-2$
+		   });
+		addAnnotation
+		  (getInterfaceList_Plugs(),
+		   source,
+		   new String[] {
+			   "kind", "element", //$NON-NLS-1$ //$NON-NLS-2$
+			   "name", "AdapterDeclaration", //$NON-NLS-1$ //$NON-NLS-2$
+			   "namespace", "##targetNamespace" //$NON-NLS-1$ //$NON-NLS-2$
+		   });
+		addAnnotation
+		  (getInterfaceList_Sockets(),
+		   source,
+		   new String[] {
+			   "kind", "element", //$NON-NLS-1$ //$NON-NLS-2$
+			   "name", "AdapterDeclaration", //$NON-NLS-1$ //$NON-NLS-2$
 			   "namespace", "##targetNamespace" //$NON-NLS-1$ //$NON-NLS-2$
 		   });
 		addAnnotation
@@ -5884,6 +6012,22 @@ public class LibraryElementPackageImpl extends EPackageImpl implements LibraryEl
 		   new String[] {
 			   "kind", "element", //$NON-NLS-1$ //$NON-NLS-2$
 			   "name", "OutputPrimitive", //$NON-NLS-1$ //$NON-NLS-2$
+			   "namespace", "##targetNamespace" //$NON-NLS-1$ //$NON-NLS-2$
+		   });
+		addAnnotation
+		  (getSimpleECState_SimpleECActions(),
+		   source,
+		   new String[] {
+			   "kind", "element", //$NON-NLS-1$ //$NON-NLS-2$
+			   "name", "SimpleECActions", //$NON-NLS-1$ //$NON-NLS-2$
+			   "namespace", "##targetNamespace" //$NON-NLS-1$ //$NON-NLS-2$
+		   });
+		addAnnotation
+		  (getSimpleFBType_SimpleECStates(),
+		   source,
+		   new String[] {
+			   "kind", "element", //$NON-NLS-1$ //$NON-NLS-2$
+			   "name", "SimpleECStates", //$NON-NLS-1$ //$NON-NLS-2$
 			   "namespace", "##targetNamespace" //$NON-NLS-1$ //$NON-NLS-2$
 		   });
 		addAnnotation
