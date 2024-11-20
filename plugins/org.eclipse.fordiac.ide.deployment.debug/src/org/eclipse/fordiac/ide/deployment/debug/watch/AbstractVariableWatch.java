@@ -102,11 +102,6 @@ public abstract class AbstractVariableWatch extends DeploymentDebugVariable impl
 	}
 
 	@Override
-	public boolean hasValueChanged() {
-		return false; // prevents annoying flickering in variables view
-	}
-
-	@Override
 	public int hashCode() {
 		return getQualifiedName().hashCode();
 	}
