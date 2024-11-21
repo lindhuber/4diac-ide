@@ -232,6 +232,14 @@ public abstract class AbstractFBNElementEditPart extends AbstractPositionableEle
 	}
 
 	@Override
+	public <T> T getAdapter(final Class<T> key) {
+		if (key == FBNetworkElement.class) {
+			return key.cast(getModel());
+		}
+		return super.getAdapter(key);
+	}
+
+	@Override
 	public FBNetworkElement getModel() {
 		return (FBNetworkElement) super.getModel();
 	}
@@ -499,9 +507,12 @@ public abstract class AbstractFBNElementEditPart extends AbstractPositionableEle
 
 	private void addPinIndicators(final List<Object> elements) {
 		final boolean hasInvisibleInputs = !getModel().getInterface().getInputVars().stream()
-				.filter(it -> !it.isVisible()).toList().isEmpty();
+				.filter(it -> !it.isVisible()).toList().isEmpty()
+				|| !getModel().getInterface().getInOutVars().stream().filter(it -> !it.isVisible()).toList().isEmpty();
 		final boolean hasInvisibleOutputs = !getModel().getInterface().getOutputVars().stream()
-				.filter(it -> !it.isVisible()).toList().isEmpty();
+				.filter(it -> !it.isVisible()).toList().isEmpty()
+				|| !getModel().getInterface().getOutMappedInOutVars().stream().filter(it -> !it.isVisible()).toList()
+						.isEmpty();
 
 		elements.addAll(getPinIndicators(hasInvisibleInputs, hasInvisibleOutputs));
 	}

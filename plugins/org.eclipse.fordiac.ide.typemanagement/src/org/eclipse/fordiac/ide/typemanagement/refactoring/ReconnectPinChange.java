@@ -35,9 +35,8 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 
-public class ReconnectPinChange extends AbstractCommandChange<FBNetworkElement> implements IFordiacPreviewChange {
+public class ReconnectPinChange extends ConfigurableChange<FBNetworkElement> {
 
-	private final EnumSet<ChangeState> state = EnumSet.of(ChangeState.RECONNECT);
 	private final String newName;
 	private final String oldName;
 
@@ -50,23 +49,13 @@ public class ReconnectPinChange extends AbstractCommandChange<FBNetworkElement> 
 
 	@Override
 	protected Command createCommand(final FBNetworkElement element) {
-		return new ReconnectPinByName(oldName, newName, element, state);
+		return new ReconnectPinByName(oldName, newName, element, getState());
 
-	}
-
-	@Override
-	public EnumSet<ChangeState> getState() {
-		return state;
 	}
 
 	@Override
 	public EnumSet<ChangeState> getAllowedChoices() {
 		return EnumSet.of(ChangeState.RECONNECT, ChangeState.NO_CHANGE, ChangeState.DELETE);
-	}
-
-	@Override
-	public void addState(final ChangeState newState) {
-		state.add(newState);
 	}
 
 	@Override
