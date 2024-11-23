@@ -14,7 +14,6 @@ package org.eclipse.fordiac.ide.deployment.debug;
 
 import java.text.MessageFormat;
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +47,7 @@ import org.eclipse.fordiac.ide.deployment.exceptions.DeploymentException;
 import org.eclipse.fordiac.ide.deployment.interactors.DeviceManagementInteractorFactory;
 import org.eclipse.fordiac.ide.deployment.interactors.IDeviceManagementExecutorService;
 import org.eclipse.fordiac.ide.deployment.interactors.SharedWatchDeviceManagementInteractor;
+import org.eclipse.fordiac.ide.model.eval.EvaluatorCache;
 import org.eclipse.fordiac.ide.model.eval.EvaluatorException;
 import org.eclipse.fordiac.ide.model.eval.variable.Variable;
 import org.eclipse.fordiac.ide.model.libraryElement.AutomationSystem;
@@ -103,7 +103,9 @@ public class DeploymentDebugDevice extends DeploymentDebugElement implements IDe
 	protected void updateWatches(final Response response) {
 		incrementVariableUpdateCount();
 		final DeploymentDebugWatchData watchData = new DeploymentDebugWatchData(response);
-		watches.values().forEach(watch -> watch.updateValue(watchData));
+		try (EvaluatorCache cache = EvaluatorCache.open()) {
+			watches.values().forEach(watch -> watch.updateValue(watchData));
+		}
 		getPrimaryDebugTarget().updateWatches(false);
 	}
 
@@ -119,11 +121,13 @@ public class DeploymentDebugDevice extends DeploymentDebugElement implements IDe
 		try {
 			deviceManagementExecutor.connect();
 			deviceManagementExecutor.queryResourcesPeriodically(this::updateResources, this::handleDeviceError,
-					pollingInterval.get(ChronoUnit.NANOS), TimeUnit.NANOSECONDS);
+					pollingInterval.toMillis(), TimeUnit.MILLISECONDS);
 			deviceManagementExecutor.readWatchesPeriodically(this::updateWatches, this::handleDeviceError,
-					pollingInterval.get(ChronoUnit.NANOS), TimeUnit.NANOSECONDS);
-			Stream.of(DebugPlugin.getDefault().getBreakpointManager().getBreakpoints())
-					.forEachOrdered(this::breakpointAdded);
+					pollingInterval.toMillis(), TimeUnit.MILLISECONDS);
+			try (EvaluatorCache cache = EvaluatorCache.open()) {
+				Stream.of(DebugPlugin.getDefault().getBreakpointManager().getBreakpoints())
+						.forEachOrdered(this::breakpointAdded);
+			}
 		} catch (final DeploymentException e) {
 			throw new DebugException(Status
 					.error(MessageFormat.format(Messages.DeploymentDebugDevice_ConnectError, device.getName()), e));

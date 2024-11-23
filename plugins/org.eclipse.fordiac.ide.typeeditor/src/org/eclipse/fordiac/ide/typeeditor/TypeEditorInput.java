@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.fordiac.ide.model.libraryElement.LibraryElement;
 import org.eclipse.fordiac.ide.model.typelibrary.TypeEntry;
+import org.eclipse.fordiac.ide.model.ui.editors.ITypeEditorInput;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IMemento;
@@ -30,13 +31,19 @@ import org.eclipse.ui.part.FileEditorInputFactory;
  * method is adapted that EditorInput is equal to another EditorInput if the
  * content is equal.
  */
-public class TypeEditorInput implements IFileEditorInput, IPersistableElement {
+public class TypeEditorInput implements ITypeEditorInput, IPersistableElement {
 	private LibraryElement type;
 	private final TypeEntry entry;
+	private final IFile file;
 
 	public TypeEditorInput(final LibraryElement type, final TypeEntry entry) {
+		this(type, entry, entry.getFile());
+	}
+
+	public TypeEditorInput(final LibraryElement type, final TypeEntry entry, final IFile file) {
 		this.type = type;
 		this.entry = entry;
+		this.file = file;
 	}
 
 	@Override
@@ -62,7 +69,7 @@ public class TypeEditorInput implements IFileEditorInput, IPersistableElement {
 	@Override
 	public String getToolTipText() {
 		return type.getComment() == null ? "" //$NON-NLS-1$
-				: type.getComment() + " (" + entry.getFile().getProjectRelativePath().toString() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+				: type.getComment() + " (" + getFile().getProjectRelativePath().toString() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override
@@ -70,10 +77,12 @@ public class TypeEditorInput implements IFileEditorInput, IPersistableElement {
 		return null;
 	}
 
+	@Override
 	public LibraryElement getContent() {
 		return type;
 	}
 
+	@Override
 	public TypeEntry getTypeEntry() {
 		return entry;
 	}
@@ -119,7 +128,7 @@ public class TypeEditorInput implements IFileEditorInput, IPersistableElement {
 
 	@Override
 	public IFile getFile() {
-		return entry.getFile();
+		return file;
 	}
 
 }
