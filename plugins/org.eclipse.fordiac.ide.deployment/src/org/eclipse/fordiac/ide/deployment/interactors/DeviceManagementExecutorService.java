@@ -348,6 +348,20 @@ public class DeviceManagementExecutorService extends AbstractDelegatingDeviceMan
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
+	public ScheduledFuture<Void> queryResourcesPeriodically(
+			final Consumer<List<org.eclipse.fordiac.ide.deployment.devResponse.Resource>> consumer,
+			final Consumer<DeploymentException> error, final long period, final TimeUnit unit) {
+		return (ScheduledFuture<Void>) executorService.scheduleAtFixedRate(() -> {
+			try {
+				consumer.accept(getDelegate().queryResources());
+			} catch (final DeploymentException e) {
+				error.accept(e);
+			}
+		}, 0, period, unit);
+	}
+
+	@Override
 	public Future<Response> readWatchesAsync() {
 		return executorService.submit(getDelegate()::readWatches);
 	}
@@ -356,11 +370,24 @@ public class DeviceManagementExecutorService extends AbstractDelegatingDeviceMan
 	@SuppressWarnings("unchecked")
 	public ScheduledFuture<Void> readWatchesPeriodically(final Consumer<Response> consumer, final long period,
 			final TimeUnit unit) {
-		return (ScheduledFuture<Void>) executorService.scheduleAtFixedRate(() -> {
+		return (ScheduledFuture<Void>) executorService.scheduleWithFixedDelay(() -> {
 			try {
 				consumer.accept(getDelegate().readWatches());
 			} catch (final DeploymentException e) {
 				sneakyThrow(e); // will be wrapped in an ExecutionException anyway
+			}
+		}, 0, period, unit);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public ScheduledFuture<Void> readWatchesPeriodically(final Consumer<Response> consumer,
+			final Consumer<DeploymentException> error, final long period, final TimeUnit unit) {
+		return (ScheduledFuture<Void>) executorService.scheduleWithFixedDelay(() -> {
+			try {
+				consumer.accept(getDelegate().readWatches());
+			} catch (final DeploymentException e) {
+				error.accept(e);
 			}
 		}, 0, period, unit);
 	}

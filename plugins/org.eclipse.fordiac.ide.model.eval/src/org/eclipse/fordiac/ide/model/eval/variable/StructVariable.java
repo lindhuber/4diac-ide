@@ -17,9 +17,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.eclipse.fordiac.ide.model.data.DataType;
 import org.eclipse.fordiac.ide.model.data.StructuredType;
 import org.eclipse.fordiac.ide.model.eval.value.StructValue;
 import org.eclipse.fordiac.ide.model.eval.value.Value;
+import org.eclipse.fordiac.ide.model.eval.value.ValueOperations;
+import org.eclipse.fordiac.ide.model.value.TypedValue;
 
 public class StructVariable extends AbstractVariable<StructValue> implements Iterable<Variable<?>> {
 	private final StructValue value;
@@ -30,21 +33,41 @@ public class StructVariable extends AbstractVariable<StructValue> implements Ite
 	}
 
 	public StructVariable(final String name, final StructuredType type, final String value) {
-		this(name, type);
-		setValue(value);
+		super(name, type);
+		this.value = new StructValue((StructValue) ValueOperations.parseValue(value, type, null));
 	}
 
 	public StructVariable(final String name, final StructuredType type, final Value value) {
-		this(name, type);
-		setValue(value);
+		super(name, type);
+		this.value = new StructValue(checkValue(value));
 	}
 
 	@Override
 	public void setValue(final Value value) {
+		checkValue(value).getMembers().forEach((name, variable) -> this.value.get(name).setValue(variable.getValue()));
+	}
+
+	protected StructValue checkValue(final Value value) {
 		if (!(value instanceof final StructValue structValue) || !getType().isAssignableFrom(structValue.getType())) {
 			throw createCastException(value);
 		}
-		structValue.getMembers().forEach((name, variable) -> this.value.get(name).setValue(variable.getValue()));
+		return structValue;
+	}
+
+	@Override
+	public void setValue(final TypedValue value) {
+		if (!getType().isAssignableFrom(value.type())) {
+			createCastException(value);
+		}
+		final Map<?, ?> memberValues = (Map<?, ?>) value.value();
+		this.value.getMembers().forEach((name, member) -> {
+			final Object memberValue = memberValues.get(name);
+			if (memberValue != null) {
+				member.setValue(new TypedValue((DataType) member.getType(), memberValue));
+			} else {
+				member.setValue(ValueOperations.defaultValue(member.getType()));
+			}
+		});
 	}
 
 	@Override
