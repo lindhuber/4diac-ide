@@ -40,11 +40,11 @@ abstract class ForteLibraryElementTemplate<T extends LibraryElement> extends For
 	@Accessors(PROTECTED_GETTER) final T type
 	final Map<VarDeclaration, ILanguageSupport> variableLanguageSupport
 
-	new(T type, String name, Path prefix, Map<?,?> options) {
+	new(T type, String name, Path prefix) {
 		super(name, prefix)
 		this.type = type;
 		variableLanguageSupport = type.getAllContentsOfType(VarDeclaration).toInvertedMap [
-			ILanguageSupportFactory.createLanguageSupport("forte_ng", it, options)
+			ILanguageSupportFactory.createLanguageSupport("forte_ng", it)
 		]
 	}
 
@@ -85,7 +85,7 @@ abstract class ForteLibraryElementTemplate<T extends LibraryElement> extends For
 	'''
 
 	def protected generateVariableInitializer(Iterable<VarDeclaration> variables) ///
-	'''«FOR variable : variables.filter[!value?.value.nullOrEmpty] BEFORE ",\n" SEPARATOR ",\n"»«variable.generateName»(«variable.generateVariableDefaultValue»)«ENDFOR»'''
+	'''«FOR variable : variables BEFORE ",\n" SEPARATOR ",\n"»«variable.generateName»(«variable.generateVariableDefaultValue»)«ENDFOR»'''
 
 	def protected generateVariableInitializerFromParameters(Iterable<VarDeclaration> variables) //
 	'''«FOR variable : variables BEFORE ",\n" SEPARATOR ",\n"»«variable.generateName»(«variable.generateNameAsParameter»)«ENDFOR»'''
