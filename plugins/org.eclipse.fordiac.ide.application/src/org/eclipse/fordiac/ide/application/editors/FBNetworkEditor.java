@@ -102,6 +102,11 @@ public class FBNetworkEditor extends DiagramEditorWithFlyoutPalette {
 	}
 
 	@Override
+	protected String getContextId() {
+		return "org.eclipse.fordiac.ide.fbnetwork"; //$NON-NLS-1$
+	}
+
+	@Override
 	protected EditPartFactory getEditPartFactory() {
 		return new ElementEditPartFactory(this);
 	}
