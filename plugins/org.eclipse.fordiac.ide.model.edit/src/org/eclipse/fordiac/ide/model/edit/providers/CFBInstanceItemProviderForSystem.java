@@ -11,7 +11,7 @@
  *   Alois Zoitl - initial API and implementation and/or initial documentation
  *                 (Based on SubAppItmeProviderForSystem
  *******************************************************************************/
-package org.eclipse.fordiac.ide.systemmanagement.ui.providers;
+package org.eclipse.fordiac.ide.model.edit.providers;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -61,8 +61,8 @@ public class CFBInstanceItemProviderForSystem extends CFBInstanceItemProvider {
 	@Override
 	public Object getParent(final Object object) {
 		final EObject cont = ((EObject) object).eContainer();
-		if (cont instanceof final FBNetwork fbn) {
-			return fbn.eContainer();
+		if (cont instanceof FBNetwork) {
+			return cont.eContainer();
 		}
 		return super.getParent(object);
 	}
