@@ -24,6 +24,7 @@ import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.fordiac.ide.gef.annotation.GraphicalAnnotationModel;
 import org.eclipse.fordiac.ide.gef.annotation.GraphicalAnnotationModelListener;
+import org.eclipse.fordiac.ide.gef.nat.DefaultImportCopyPasteLayerConfiguration;
 import org.eclipse.fordiac.ide.gef.nat.InitialValueEditorConfiguration;
 import org.eclipse.fordiac.ide.gef.nat.TypeDeclarationEditorConfiguration;
 import org.eclipse.fordiac.ide.gef.nat.VarDeclarationColumnAccessor;
@@ -80,6 +81,7 @@ public class StructEditingComposite extends Composite implements CommandExecutor
 	private final IChangeableRowDataProvider<VarDeclaration> structMemberProvider;
 	private RowPostSelectionProvider<VarDeclaration> selectionProvider;
 	private final IWorkbenchSite site;
+	protected boolean blockRefresh = false;
 
 	private final Adapter adapter = new SingleRecursiveContentAdapter() {
 
@@ -94,7 +96,7 @@ public class StructEditingComposite extends Composite implements CommandExecutor
 
 	private void notifyRefresh() {
 		Display.getDefault().syncExec(() -> {
-			if (null != structType && natTable != null && !natTable.isDisposed()) {
+			if (null != structType && natTable != null && !natTable.isDisposed() && !blockRefresh) {
 				natTable.refresh();
 			}
 		});
@@ -142,11 +144,13 @@ public class StructEditingComposite extends Composite implements CommandExecutor
 				VarDeclarationTableColumn.DEFAULT_COLUMNS);
 		inputDataLayer.setConfigLabelAccumulator(
 				new VarDeclarationConfigLabelAccumulator(structMemberProvider, this::getAnnotationModel));
-		natTable = NatTableWidgetFactory.createRowNatTable(this, inputDataLayer,
-				new NatTableColumnProvider<>(VarDeclarationTableColumn.DEFAULT_COLUMNS), IEditableRule.ALWAYS_EDITABLE,
-				null, this, false);
+		final NatTableColumnProvider<VarDeclarationTableColumn> columnProvider = new NatTableColumnProvider<>(
+				VarDeclarationTableColumn.DEFAULT_COLUMNS);
+		natTable = NatTableWidgetFactory.createRowNatTable(this, inputDataLayer, columnProvider,
+				IEditableRule.ALWAYS_EDITABLE, null, this, false);
 		natTable.addConfiguration(new InitialValueEditorConfiguration(structMemberProvider));
 		natTable.addConfiguration(new TypeDeclarationEditorConfiguration(structMemberProvider));
+		natTable.addConfiguration(new DefaultImportCopyPasteLayerConfiguration(columnProvider, this));
 		natTable.configure();
 
 		selectionProvider = new StructEditingCompositeSelectionProvider(natTable,
@@ -212,7 +216,9 @@ public class StructEditingComposite extends Composite implements CommandExecutor
 	@Override
 	public void executeCommand(final Command cmd) {
 		if ((null != getType()) && (null != cmdStack) && (null != cmd) && cmd.canExecute()) {
+			blockRefresh = true;
 			cmdStack.execute(cmd);
+			blockRefresh = false;
 		}
 	}
 

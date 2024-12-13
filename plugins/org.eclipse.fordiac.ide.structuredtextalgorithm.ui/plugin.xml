@@ -267,6 +267,28 @@
 			uriExtension="ADP">
 		</resourceServiceProvider>
 	</extension>
+	<extension point="org.eclipse.ui.preferencePages">
+		<page
+			category="org.eclipse.fordiac.ide.structuredtextalgorithm.STAlgorithm"
+			class="org.eclipse.fordiac.ide.structuredtextalgorithm.ui.STAlgorithmExecutableExtensionFactory:org.eclipse.xtext.ui.validation.ValidatorPreferencePage"
+			id="org.eclipse.fordiac.ide.structuredtextalgorithm.STAlgorithm.validator.preferencePage"
+			name="Errors/Warnings">
+			<keywordReference id="org.eclipse.fordiac.ide.structuredtextalgorithm.ui.keyword_STAlgorithm"/>
+		</page>
+	</extension>
+	<extension point="org.eclipse.ui.propertyPages">
+		<page
+			category="org.eclipse.fordiac.ide.structuredtextalgorithm.STAlgorithm"
+			class="org.eclipse.fordiac.ide.structuredtextalgorithm.ui.STAlgorithmExecutableExtensionFactory:org.eclipse.xtext.ui.validation.ValidatorPreferencePage"
+			id="org.eclipse.fordiac.ide.structuredtextalgorithm.STAlgorithm.validator.propertyPage"
+			name="Errors/Warnings">
+			<keywordReference id="org.eclipse.fordiac.ide.structuredtextalgorithm.ui.keyword_STAlgorithm"/>
+			<enabledWhen>
+				<adapt type="org.eclipse.core.resources.IProject"/>
+			</enabledWhen>
+			<filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
+		</page>
+	</extension>
 	<!-- Quick Outline -->
 	<extension
 		point="org.eclipse.ui.handlers">
@@ -579,6 +601,15 @@
           name="Save Actions">
        <keywordReference
              id="org.eclipse.fordiac.ide.structuredtextalgorithm.ui.keyword_STAlgorithm">
+       </keywordReference>
+    </page>
+    <page
+          category="org.eclipse.fordiac.ide.structuredtextalgorithm.STAlgorithm"
+          class="org.eclipse.fordiac.ide.structuredtextalgorithm.ui.STAlgorithmExecutableExtensionFactory:org.eclipse.fordiac.ide.structuredtextcore.ui.editor.STCoreEditorPreferencePage"
+          id="org.eclipse.fordiac.ide.structuredtextalgorithm.ui.editor"
+          name="Editor">
+       <keywordReference
+             id="org.eclipse.fordiac.ide.structuredtextcore.ui.keyword_STCore">
        </keywordReference>
     </page>
  </extension>

@@ -9,11 +9,11 @@
             finalPerspective="org.eclipse.fordiac.ide.SystemPerspective"
             icon="fordiacimage://ICON_NEW_4DIAC_PROJECT"
             id="org.eclipse.fordiac.ide.systemmanagement.ui.wizard.New4diacProjectWizard"
-            name="%wizard.name.0"
+            name="%New4diacProjectWizard_WizardName"
             preferredPerspectives="org.eclipse.fordiac.ide.SystemPerspective, org.eclipse.fordiac.ide.typemanagement.perspective"
             project="true">
          <description>
-            %wizard.description.0
+            %New4diacProjectWizard_WizardDesc
          </description>
       </wizard>
       <wizard
@@ -21,21 +21,10 @@
             class="org.eclipse.fordiac.ide.systemmanagement.ui.wizard.NewSystemWizard"
             icon="fordiacimage://ICON_NEW_SYSTEM"
             id="org.eclipse.fordiac.ide.systemmanagement.ui.wizard.NewSystemWizard"
-            name="%newsystemwizard.name"
+            name="%NewSystemWizardPage_NewSystemName"
             project="false">
          <description>
-            %newsystemwizard.description
-         </description>
-      </wizard>
-      <wizard
-            category="org.eclipse.fordiac.ide.newWizard.category"
-            class="org.eclipse.fordiac.ide.systemmanagement.ui.wizard.NewApplicationWizard"
-            icon="fordiacimage://ICON_NEW_APPLICATION"
-            id="org.eclipse.fordiac.ide.systemmanagement.ui.wizard.NewApplicationWizard"
-            name="%LABEL_NewApplicationWizard"
-            project="false">
-         <description>
-            %wizard.description.1 
+            %NewSystemWizard.description
          </description>
       </wizard>
       <category
@@ -83,45 +72,6 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler 
-            class="org.eclipse.fordiac.ide.systemmanagement.ui.handlers.RenameApplication"
-            commandId="org.eclipse.ui.edit.rename">
-         <activeWhen>
-         	<with variable="selection">
-		    <count value="1" />
-		    <iterate operator="and">
-		     <adapt type="org.eclipse.fordiac.ide.model.libraryElement.Application" />
-		    </iterate>
-		   </with>           
-         </activeWhen>
-      </handler>
-      <handler 
-            class="org.eclipse.fordiac.ide.systemmanagement.ui.handlers.DeleteHandler"
-            commandId="org.eclipse.ui.edit.delete">
-         <activeWhen>
-         	<with variable="selection">
-		    <iterate operator="and" ifEmpty="false">
-		     <or>
-		     	<adapt type="org.eclipse.fordiac.ide.model.libraryElement.Application" />
-		     	<adapt type="org.eclipse.fordiac.ide.model.libraryElement.Resource" />
-		     	<adapt type="org.eclipse.fordiac.ide.model.libraryElement.Device" />
-		     </or>
-		    </iterate>
-		   </with>           
-         </activeWhen>
-      </handler>      
-      <handler 
-            class="org.eclipse.fordiac.ide.systemmanagement.ui.handlers.RenameSystem"
-            commandId="org.eclipse.ui.edit.rename">
-         <activeWhen>
-            <with variable="selection">
-		    <count value="1" />
-		    <iterate operator="and">
-		     <adapt type="org.eclipse.fordiac.ide.model.libraryElement.AutomationSystem" />
-		    </iterate>
-		   </with>            
-         </activeWhen>
-      </handler>
-      <handler 
             class="org.eclipse.fordiac.ide.systemmanagement.ui.handlers.RefreshHandler"
             commandId="org.eclipse.fordiac.ide.systemmanagement.ui.systemexplorer.refresh">
          <activeWhen>
@@ -143,102 +93,6 @@
       <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any?endof=group.edit">
-         <command
-               commandId="org.eclipse.ui.edit.rename"
-               tooltip="Rename selected application">
-            <visibleWhen
-                  checkEnabled="false">
-               <iterate
-                     operator="or">
-                  <instanceof
-                        value="org.eclipse.fordiac.ide.model.libraryElement.Application">
-                  </instanceof>
-               </iterate>
-            </visibleWhen>
-         </command>
-      </menuContribution>
-      <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any?endof=group.edit">
-         <command
-               commandId="org.eclipse.ui.edit.delete"
-               tooltip="Delete selected application">
-            <visibleWhen
-                  checkEnabled="false">
-               <iterate
-                     operator="or">
-                  <instanceof
-                        value="org.eclipse.fordiac.ide.model.libraryElement.Application">
-                  </instanceof>
-               </iterate>
-            </visibleWhen>
-         </command>
-      </menuContribution>
-      <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any?endof=group.edit">
-         <command
-               commandId="org.eclipse.ui.edit.rename"
-               tooltip="Rename selected automation system">
-            <visibleWhen
-                  checkEnabled="false">
-               <iterate
-                     operator="or">
-                  <instanceof
-                        value="org.eclipse.fordiac.ide.model.libraryElement.AutomationSystem">
-                  </instanceof>
-               </iterate>
-            </visibleWhen>
-         </command>
-      </menuContribution>
-      <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any?endof=group.edit">
-         <command
-               commandId="org.eclipse.ui.edit.delete"
-               tooltip="Delete selected Automation System">
-            <visibleWhen
-                  checkEnabled="false">
-               <iterate
-                     operator="or">
-                  <instanceof
-                        value="org.eclipse.fordiac.ide.model.libraryElement.AutomationSystem">
-                  </instanceof>
-               </iterate>
-            </visibleWhen>
-         </command>
-      </menuContribution>
-      <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any?endof=group.edit">
-         <command
-               commandId="org.eclipse.ui.edit.delete"
-               tooltip="Delete selected Resource">
-            <visibleWhen
-                  checkEnabled="false">
-               <iterate
-                     operator="or">
-                  <instanceof
-                        value="org.eclipse.fordiac.ide.model.libraryElement.Resource">
-                  </instanceof>
-               </iterate>
-            </visibleWhen>
-         </command>
-      </menuContribution>
-      <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any?endof=group.edit">
-         <command
-               commandId="org.eclipse.ui.edit.delete"
-               tooltip="Delete selected Device">
-            <visibleWhen
-                  checkEnabled="false">
-               <iterate
-                     operator="or">
-                  <instanceof
-                        value="org.eclipse.fordiac.ide.model.libraryElement.Device">
-                  </instanceof>
-               </iterate>
-            </visibleWhen>
-         </command>
-      </menuContribution>
-      <menuContribution
             locationURI="popup:org.eclipse.ui.popup.any?endof=group.reorganize">
          <command
                commandId="org.eclipse.fordiac.ide.systemmanagement.ui.systemexplorer.refresh"
@@ -252,7 +106,19 @@
                </iterate>
             </visibleWhen>
          </command>
-      </menuContribution>            
+      </menuContribution>
+      <menuContribution
+			locationURI="toolbar:org.eclipse.ui.workbench.file?after=new.group">
+        <command
+            commandId="org.eclipse.ui.newWizard"
+            label="%New4diacProjectWizard_WizardName"
+            tooltip="%New4diacProjectWizard_WizardDesc"
+            icon="fordiacimage://ICON_NEW_4DIAC_PROJECT">
+            <parameter
+                name="newWizardId"
+                value="org.eclipse.fordiac.ide.systemmanagement.ui.wizard.New4diacProjectWizard" />
+        </command>
+      </menuContribution>
    </extension>
       <extension
             point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
@@ -323,9 +189,6 @@
                <actionExtension
                      pattern="org.eclipse.ui.navigator.resources.*">
                </actionExtension>
-               <actionExtension
-                     pattern="org.eclipse.fordiac.ide.systemmanagement.SystemExplorerNewActionProvider">
-               </actionExtension>                     
                <actionExtension
                      pattern="org.eclipse.fordiac.ide.systemmanagement.OpenActionProvider">
                </actionExtension>   
@@ -527,25 +390,6 @@
             wizardId="org.eclipse.fordiac.ide.systemmanagement.ui.wizard.NewSystemWizard">
          <enablement></enablement>
       </commonWizard> 
-      <commonWizard
-            type="new"
-            wizardId="org.eclipse.fordiac.ide.systemmanagement.ui.wizard.NewApplicationWizard">
-         <enablement>
-            <adapt type="org.eclipse.core.resources.IFile" >
-                <test property="org.eclipse.core.resources.extension" value="sys"/>
-            </adapt>
-         </enablement>
-      </commonWizard>
-      <actionProvider
-            class="org.eclipse.fordiac.ide.systemmanagement.ui.actions.SystemExplorerNewActionProvider"
-            id="org.eclipse.fordiac.ide.systemmanagement.SystemExplorerNewActionProvider">
-            <enablement>
-            <or>
-               <instanceof value="org.eclipse.emf.ecore.EObject"> </instanceof>
-               
-            </or>
-         </enablement>
-      </actionProvider>
       <actionProvider
             class="org.eclipse.fordiac.ide.model.ui.actions.Open4DIACElementActionProvider"
             id="org.eclipse.fordiac.ide.systemmanagement.OpenActionProvider">
@@ -576,15 +420,6 @@
             </and>
           </or>
 		</enablement>
-      </actionProvider>
-      <actionProvider
-            class="org.eclipse.fordiac.ide.systemmanagement.ui.actions.CloseSystemActionProvider"
-            id="org.eclipse.fordiac.ide.systemmanagement.CloseProjectActionProvider">
-            <enablement>
-            <or>
-               <instanceof value="org.eclipse.fordiac.ide.model.libraryElement.AutomationSystem"> </instanceof>               
-            </or>
-         </enablement>
       </actionProvider>
       <commonFilter
             activeByDefault="false"
@@ -679,6 +514,13 @@
             </description>
       </decorator>
    </extension>
+    <extension
+          point="org.eclipse.ui.ide.markerResolution">
+       <markerResolutionGenerator
+             class="org.eclipse.fordiac.ide.systemmanagement.ui.marker.resolution.FordiacNatureMarkerResolutionGenerator"
+             markerType="org.eclipse.fordiac.ide.model.projectConfiguration">
+       </markerResolutionGenerator>
+    </extension>
 
    
 </plugin>

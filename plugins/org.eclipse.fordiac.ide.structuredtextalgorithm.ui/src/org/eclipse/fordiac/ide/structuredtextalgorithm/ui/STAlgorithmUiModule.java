@@ -23,6 +23,7 @@ import org.eclipse.fordiac.ide.structuredtextalgorithm.ui.document.STAlgorithmDo
 import org.eclipse.fordiac.ide.structuredtextalgorithm.ui.editor.embedded.STAlgorithmEmbeddedEditorActions;
 import org.eclipse.fordiac.ide.structuredtextalgorithm.ui.editor.hyperlinking.STAlgorithmHyperlinkHelper;
 import org.eclipse.fordiac.ide.structuredtextalgorithm.ui.refactoring.ExtractMethodRefactoring;
+import org.eclipse.fordiac.ide.structuredtextalgorithm.ui.validation.STAlgorithmCustomValidatorConfigurationBlock;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.cleanup.STCoreCleanupEditorCallback;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.cleanup.STCoreSaveActionsPreferences;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.codemining.STCoreCodeMiningPreferences;
@@ -32,6 +33,7 @@ import org.eclipse.fordiac.ide.structuredtextcore.ui.contentassist.STCorePrefixM
 import org.eclipse.fordiac.ide.structuredtextcore.ui.document.LibraryElementXtextDocumentUpdater.LibraryElementChangeAdapterFilter;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.document.STCoreDocumentPartitioner;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.document.STCoreDocumentProvider;
+import org.eclipse.fordiac.ide.structuredtextcore.ui.editor.STCoreEditorPreferences;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.editor.STCoreSourceViewer.STCoreSourceViewerFactory;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.editor.STCoreURIEditorOpener;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.editor.formatting.STCoreWhitespaceInformationProvider;
@@ -119,6 +121,7 @@ import org.eclipse.xtext.ui.refactoring2.ChangeConverter;
 import org.eclipse.xtext.ui.refactoring2.rename.ISimpleNameProvider;
 import org.eclipse.xtext.ui.resource.IResourceUIServiceProvider;
 import org.eclipse.xtext.ui.shared.Access;
+import org.eclipse.xtext.ui.validation.AbstractValidatorConfigurationBlock;
 import org.eclipse.xtext.ui.validation.IResourceUIValidatorExtension;
 import org.eclipse.xtext.ui.validation.MarkerTypeProvider;
 
@@ -246,6 +249,11 @@ public class STAlgorithmUiModule extends AbstractSTAlgorithmUiModule {
 		return STAlgorithmEmbeddedEditorActions.Factory.class;
 	}
 
+	public void configureEditor(final Binder binder) {
+		binder.bind(IPreferenceStoreInitializer.class).annotatedWith(Names.named("editorInitializer")) //$NON-NLS-1$
+				.to(STCoreEditorPreferences.Initializer.class);
+	}
+
 	public void configureKeyBindingScope(final Binder binder) {
 		binder.bindConstant().annotatedWith(Names.named(XtextEditor.KEY_BINDING_SCOPE))
 				.to("org.eclipse.fordiac.ide.structuredtextcore.ui.STCoreEditorScope"); //$NON-NLS-1$
@@ -366,5 +374,10 @@ public class STAlgorithmUiModule extends AbstractSTAlgorithmUiModule {
 	public void configureOutlineTreeContribution(final Binder binder) {
 		binder.bind(IOutlineContribution.class).annotatedWith(Names.named("OutlineTreeContribution")) //$NON-NLS-1$
 				.to(OutlineTreeContribution.class);
+	}
+
+	@Override
+	public Class<? extends AbstractValidatorConfigurationBlock> bindAbstractValidatorConfigurationBlock() {
+		return STAlgorithmCustomValidatorConfigurationBlock.class;
 	}
 }

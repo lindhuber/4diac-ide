@@ -22,11 +22,9 @@ import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.fordiac.ide.globalconstantseditor.globalConstants.STVarGlobalDeclarationBlock
 import org.eclipse.fordiac.ide.model.libraryElement.FB
-import org.eclipse.fordiac.ide.model.libraryElement.INamedElement
 import org.eclipse.fordiac.ide.model.libraryElement.VarDeclaration
 import org.eclipse.fordiac.ide.structuredtextalgorithm.stalgorithm.STMethod
 import org.eclipse.fordiac.ide.structuredtextcore.services.STCoreGrammarAccess
-import org.eclipse.fordiac.ide.structuredtextcore.stcore.STCorePackage
 import org.eclipse.fordiac.ide.structuredtextcore.stcore.STFeatureExpression
 import org.eclipse.fordiac.ide.structuredtextcore.stcore.STStandardFunction
 import org.eclipse.fordiac.ide.structuredtextcore.stcore.STVarDeclaration
@@ -91,10 +89,7 @@ class STCoreSemanticHighlightingCalculator extends DefaultSemanticHighlightingCa
 	// semantic highlighting for calls of functions and methods and static variables
 	def protected dispatch boolean highlightElement(STFeatureExpression featuresExpression,
 		IHighlightedPositionAcceptor acceptor, CancelIndicator cancelIndicator) {
-
-		// do not resolve features during highlighting
-		// features are resolved by the reconciler and we are then called again anyway
-		val style = switch (feature : featuresExpression.featureNoresolve) {
+		val style = switch (feature : featuresExpression.feature) {
 			VarDeclaration:
 				STCoreHighlightingStyles.MEMBER_VARIABLE_ID
 			FB:
@@ -119,12 +114,6 @@ class STCoreSemanticHighlightingCalculator extends DefaultSemanticHighlightingCa
 			if (!n.hidden) {
 				acceptor.addPosition(n.getOffset(), n.getLength(), style)
 			}
-		}
-	}
-
-	def protected INamedElement getFeatureNoresolve(STFeatureExpression expression) {
-		switch (feature : expression.eGet(STCorePackage.eINSTANCE.STFeatureExpression_Feature, false)) {
-			INamedElement case !feature.eIsProxy: feature
 		}
 	}
 }

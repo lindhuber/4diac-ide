@@ -6,13 +6,6 @@
 
 <plugin>
 
-   <extension
-         point="org.eclipse.emf.ecore.extension_parser">
-      <parser
-            class="org.eclipse.fordiac.ide.fb.interpreter.mm.FunctionBlockFactory"
-            type="fbt">
-      </parser>
-   </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated OperationalSemantics -->
@@ -123,7 +116,7 @@
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <file-association
-            content-type=" org.eclipse.emf.compare.content.type"
+            content-type="org.eclipse.emf.compare.content.type"
             file-extensions="opsem">
       </file-association>
    </extension>2

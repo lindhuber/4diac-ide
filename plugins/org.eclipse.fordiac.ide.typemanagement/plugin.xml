@@ -669,13 +669,6 @@
             properties="ConnectionsToStructSupported"
             type="java.lang.Object">
       </propertyTester>
-      <propertyTester
-            class="org.eclipse.fordiac.ide.typemanagement.refactoring.connection.RepairBrokenConnectionPropertyTester"
-            id="org.eclipse.fordiac.ide.typemanagement.RepairBrokenConnectionTester"
-            namespace="org.eclipse.fordiac.ide.typemanagement"
-            properties="RepairConnectionSupported"
-            type="java.lang.Object">
-      </propertyTester>
    </extension>  
 
    
@@ -706,7 +699,7 @@
          <or>
          <instanceof value="org.eclipse.fordiac.ide.typemanagement.refactoring.delete.DeleteUpdateFBTypeInterfaceChange"/>
 		 <instanceof value="org.eclipse.fordiac.ide.typemanagement.refactoring.delete.DeleteUpdateStructDataTypeMemberVariableChange"/>
-		 <instanceof value="org.eclipse.fordiac.ide.typemanagement.refactoring.delete.SafeFBTypeDeletionChange$DeleteInternalFBChange"/>
+		 <instanceof value="org.eclipse.fordiac.ide.typemanagement.refactoring.delete.DeleteInternalFBChange"/>
 		 <instanceof value="org.eclipse.fordiac.ide.typemanagement.refactoring.delete.UpdateUntypedSubappPinChange"/>
 		 <instanceof value="org.eclipse.fordiac.ide.typemanagement.refactoring.ReconnectPinChange"/>
 		 <instanceof value="org.eclipse.fordiac.ide.typemanagement.refactoring.UpdateManipulatorChange"/>
@@ -765,6 +758,27 @@
                label="Rename Element"
                style="push">
          </command>
+      </menuContribution>
+      <menuContribution 
+      		allPopups="false" 
+      		locationURI="toolbar:org.eclipse.fordiac.ide.toolbar.table">
+		<command 
+				commandId="org.eclipse.fordiac.ide.application.commands.quickFix" 
+				icon="platform:/plugin/org.eclipse.ui.ide/icons/full/obj16/quickfix_error_obj.png" 
+				style="push"> 
+		</command>
+	  </menuContribution>
+      <menuContribution
+			locationURI="toolbar:org.eclipse.ui.workbench.file?after=new.group">
+        <command
+            commandId="org.eclipse.ui.newWizard"
+            label="New Type"
+            tooltip="Create a new type"
+            icon="fordiacimage://ICON_NEW_FUNCTIONBLOCK">
+            <parameter
+                name="newWizardId"
+                value="org.eclipse.fordiac.ide.typemanagement.wizards.NewFBTypeWizard" />
+        </command>
       </menuContribution>
    </extension>
        <extension

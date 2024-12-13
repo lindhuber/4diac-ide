@@ -27,6 +27,7 @@ import org.eclipse.fordiac.ide.structuredtextcore.ui.contentassist.STCorePrefixM
 import org.eclipse.fordiac.ide.structuredtextcore.ui.contentassist.STCoreProposalProvider.STCoreReferenceProposalCreator;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.document.STCoreDocumentPartitioner;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.document.STCoreDocumentProvider;
+import org.eclipse.fordiac.ide.structuredtextcore.ui.editor.STCoreEditorPreferences;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.editor.STCoreSourceViewer.STCoreSourceViewerFactory;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.editor.formatting.STCoreWhitespaceInformationProvider;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.editor.occurrences.STCoreOccurrenceComputer;
@@ -56,6 +57,7 @@ import org.eclipse.fordiac.ide.structuredtextcore.ui.resource.STCoreResourceUISe
 import org.eclipse.fordiac.ide.structuredtextcore.ui.syntaxcoloring.STCoreAntlrTokenToAttributeIdMapper;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.syntaxcoloring.STCoreHighlightingConfiguration;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.syntaxcoloring.STCoreSemanticHighlightingCalculator;
+import org.eclipse.fordiac.ide.structuredtextcore.ui.validation.STCoreCustomValidatorConfigurationBlock;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.validation.STCoreMarkerCreator;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.validation.STCoreMarkerTypeProvider;
 import org.eclipse.fordiac.ide.structuredtextcore.ui.validation.STCoreResourceUIValidatorExtension;
@@ -104,6 +106,7 @@ import org.eclipse.xtext.ui.refactoring2.ChangeConverter;
 import org.eclipse.xtext.ui.refactoring2.rename.ISimpleNameProvider;
 import org.eclipse.xtext.ui.resource.IResourceUIServiceProvider;
 import org.eclipse.xtext.ui.shared.Access;
+import org.eclipse.xtext.ui.validation.AbstractValidatorConfigurationBlock;
 import org.eclipse.xtext.ui.validation.IResourceUIValidatorExtension;
 import org.eclipse.xtext.ui.validation.MarkerTypeProvider;
 
@@ -204,6 +207,11 @@ public class GlobalConstantsUiModule extends AbstractGlobalConstantsUiModule {
 
 	public Class<? extends XtextSourceViewer.Factory> bindXtextSourceViewer$Factory() {
 		return STCoreSourceViewerFactory.class;
+	}
+
+	public void configureEditor(final Binder binder) {
+		binder.bind(IPreferenceStoreInitializer.class).annotatedWith(Names.named("editorInitializer")) //$NON-NLS-1$
+				.to(STCoreEditorPreferences.Initializer.class);
 	}
 
 	public void configureKeyBindingScope(final Binder binder) {
@@ -322,5 +330,10 @@ public class GlobalConstantsUiModule extends AbstractGlobalConstantsUiModule {
 	public void configureOutlineTreeContribution(final Binder binder) {
 		binder.bind(IOutlineContribution.class).annotatedWith(Names.named("OutlineTreeContribution")) //$NON-NLS-1$
 				.to(OutlineTreeContribution.class);
+	}
+
+	@Override
+	public Class<? extends AbstractValidatorConfigurationBlock> bindAbstractValidatorConfigurationBlock() {
+		return STCoreCustomValidatorConfigurationBlock.class;
 	}
 }

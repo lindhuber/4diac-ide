@@ -17,11 +17,8 @@ import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.ui.actions.ActionBarContributor;
 import org.eclipse.gef.ui.actions.AlignmentRetargetAction;
 import org.eclipse.gef.ui.actions.DeleteRetargetAction;
-import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.actions.RedoRetargetAction;
 import org.eclipse.gef.ui.actions.UndoRetargetAction;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.actions.ActionFactory;
 
 /**
@@ -30,23 +27,6 @@ import org.eclipse.ui.actions.ActionFactory;
  * @author Gerhard Ebenhofer (gerhard.ebenhofer@profactor.at)
  */
 public class ZoomUndoRedoActionBarContributor extends ActionBarContributor {
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.ui.part.EditorActionBarContributor#contributeToToolBar(org.
-	 * eclipse.jface.action.IToolBarManager)
-	 */
-	@Override
-	public void contributeToToolBar(final IToolBarManager toolBarManager) {
-		toolBarManager.add(getAction(GEFActionConstants.ALIGN_LEFT));
-		toolBarManager.add(getAction(GEFActionConstants.ALIGN_CENTER));
-		toolBarManager.add(getAction(GEFActionConstants.ALIGN_RIGHT));
-		toolBarManager.add(new Separator());
-		toolBarManager.add(getAction(GEFActionConstants.ALIGN_TOP));
-		toolBarManager.add(getAction(GEFActionConstants.ALIGN_MIDDLE));
-		toolBarManager.add(getAction(GEFActionConstants.ALIGN_BOTTOM));
-	}
 
 	/*
 	 * (non-Javadoc)

@@ -29,7 +29,6 @@ import org.eclipse.emf.edit.ui.util.EditUIUtil;
 import org.eclipse.fordiac.ide.debug.EvaluatorDebugVariable;
 import org.eclipse.fordiac.ide.debug.preferences.FordiacDebugPreferences;
 import org.eclipse.fordiac.ide.model.libraryElement.FBType;
-import org.eclipse.fordiac.ide.model.typelibrary.TypeLibraryManager;
 import org.eclipse.fordiac.ide.typeeditor.TypeEditorInput;
 import org.eclipse.fordiac.ide.ui.FordiacLogHelper;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -59,10 +58,6 @@ public class EvaluatorDebugModelPresentation implements IDebugModelPresentation 
 			final String path = uri.toPlatformString(true);
 			final IResource workspaceResource = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(path));
 			if (workspaceResource instanceof final IFile file) {
-				final var typeEntry = TypeLibraryManager.INSTANCE.getTypeEntryForFile(file);
-				if (typeEntry != null && typeEntry.getTypeEditable() instanceof final FBType fbType) {
-					return new TypeEditorInput(fbType, typeEntry);
-				}
 				return new FileEditorInput(file);
 			}
 		}
@@ -108,19 +103,15 @@ public class EvaluatorDebugModelPresentation implements IDebugModelPresentation 
 
 	protected static String getVariableText(final EvaluatorDebugVariable variable) {
 		final StringBuilder buffer = new StringBuilder();
-		try {
-			final String valueString = variable.getValue().getValueString();
-			final int valueMaxDisplayLength = FordiacDebugPreferences.getValueMaxDisplayLength();
-			buffer.append(variable.getName());
-			buffer.append(" := "); //$NON-NLS-1$
-			if (valueString.length() <= valueMaxDisplayLength) {
-				buffer.append(valueString);
-			} else {
-				buffer.append(valueString.substring(0, valueMaxDisplayLength));
-				buffer.append('\u2026');
-			}
-		} catch (final DebugException e) {
-			FordiacLogHelper.logError("Cannot get value string for " + variable.getName(), e); //$NON-NLS-1$
+		final String valueString = variable.getValue().getValueString();
+		final int valueMaxDisplayLength = FordiacDebugPreferences.getValueMaxDisplayLength();
+		buffer.append(variable.getName());
+		buffer.append(" := "); //$NON-NLS-1$
+		if (valueString.length() <= valueMaxDisplayLength) {
+			buffer.append(valueString);
+		} else {
+			buffer.append(valueString.substring(0, valueMaxDisplayLength));
+			buffer.append('\u2026');
 		}
 		return buffer.toString();
 	}

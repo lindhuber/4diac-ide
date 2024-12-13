@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2014 Profactor GmbH, fortiss GmbH
+ * Copyright (c) 2008, 2024 Profactor GmbH, fortiss GmbH
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -20,7 +20,7 @@ import org.eclipse.osgi.util.NLS;
  */
 @SuppressWarnings("squid:S3008") // tell sonar the java naming convention does not make sense for this class
 public final class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.eclipse.fordiac.ide.systemmanagement.ui.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "plugin"; //$NON-NLS-1$
 
 	public static String AutomationSystemEditor_CouldNotLoadSystem;
 
@@ -28,22 +28,11 @@ public final class Messages extends NLS {
 
 	public static String AutomationSystemEditor_ShowingSystem;
 
-	public static String NewApplicationWizardTitle;
+	public static String OpenApplicationForEditing;
 
-	public static String NewApplicationPage_NewApplicationDescription;
+	public static String MissingExportBuilderMarkerResolution_Description;
 
-	/** The New application page_ error message_ empty app name. */
-	public static String NewApplicationPage_ErrorMessage_EmptyElementName;
-
-	/** The New application page_ error message invalid app name. */
-	public static String NewApplicationPage_ErrorMessageInvalidAppName;
-
-	public static String NewApplicationPage_OpenApplicationForEditing;
-
-	/** The New application page_ error message no system selected. */
-	public static String NewApplicationPage_ErrorMessageNoSystemSelected;
-
-	public static String NewApplicationCommand_LABEL_NewApplication;
+	public static String MissingExportBuilderMarkerResolution_Label;
 
 	public static String NewSystemWizard_ShowAdvanced;
 
@@ -55,12 +44,28 @@ public final class Messages extends NLS {
 	/** The New system wizard_ wizard name. */
 	public static String New4diacProjectWizard_WizardName;
 
+	public static String New4diacProjectWizard_WizardTitle;
+
+	public static String New4diacProjectWizard_LibPageTitle;
+	public static String New4diacProjectWizard_LibPageName;
+	public static String New4diacProjectWizard_LibPageDesc;
+
 	public static String New4diacProjectWizard_InitialSystemName;
 	public static String New4diacProjectWizard_InitialApplicationName;
 	public static String New4diacProjectWizard_SystemNameNotValid;
 	public static String New4diacProjectWizard_DirectoryWithProjectNameAlreadyExistsInWorkspace;
 
+	public static String NewSystemWizardPage_NewSystemName;
+	public static String NewSystemWizardPage_Title;
 	public static String NewSystemWizardPage_CreateNewSystem;
+
+	public static String SystemEditor_Applications;
+
+	public static String SystemEditor_SystemConfiguration;
+
+	public static String SystemEditor_SystemInformation;
+
+	public static String SystemExplorerNewActionProvider_New;
 
 	static {
 		// initialize resource bundle

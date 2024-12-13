@@ -21,7 +21,7 @@ import org.eclipse.osgi.util.NLS;
 /** The Class Messages. */
 @SuppressWarnings("squid:S3008") // tell sonar the java naming convention does not make sense for this class
 public final class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.eclipse.fordiac.ide.gef.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "plugin"; //$NON-NLS-1$
 
 	/** The Abstract view edit part_ erro r_create figure. */
 	public static String AbstractAttributeSection_CreateAttribute;
@@ -42,7 +42,6 @@ public final class Messages extends NLS {
 	public static String ConnectionSection_Target;
 	public static String DiagramPreferences_CornerDimension;
 
-	public static String DiagramPreferences_EnableVirtualGroupInterfaces;
 	public static String DiagramPreferences_FB;
 	public static String DiagramPreferences_GeneralDiagramPreferences;
 	public static String DiagramPreferences_LabelSize;
@@ -79,7 +78,6 @@ public final class Messages extends NLS {
 	public static String DiagramPreferences_ExpandedInterfaceStackPins;
 	public static String DiagramPreferences_ExpandedInterfaceEvents;
 
-	public static String DiagramPreferences_VirtualGroupInterfaceOptions;
 	public static String FBFigure_TYPE_NOT_SET;
 	public static String FordiacContextMenuProvider_Align;
 
