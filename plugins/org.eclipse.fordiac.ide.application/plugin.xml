@@ -358,14 +358,6 @@
               name="4diac IDE Commands">
     </category>
     <command categoryId="org.eclipse.fordiac.ide.commands.category"
-             id="org.eclipse.fordiac.ide.application.commands.focusOnPredecessor"
-             name="Focus On Predecessor">
-    </command>
-    <command categoryId="org.eclipse.fordiac.ide.commands.category"
-             id="org.eclipse.fordiac.ide.application.commands.clearFocusOn"
-             name="Clear Focus-On">
-    </command>
-    <command categoryId="org.eclipse.fordiac.ide.commands.category"
              defaultHandler="org.eclipse.fordiac.ide.application.handlers.NewSubApplication"
              id="org.eclipse.fordiac.ide.application.commands.newSubApp"
              name="New Subapplication">
@@ -418,28 +410,28 @@
     <command categoryId="org.eclipse.fordiac.ide.commands.category"
              defaultHandler="org.eclipse.fordiac.ide.application.handlers.GotoParentHandler"
              id="org.eclipse.fordiac.ide.application.commands.gotoparent"
-             name="Go To Parent">
+             name="%command.goToParent.name">
     </command>
     <command categoryId="org.eclipse.fordiac.ide.commands.category"
              defaultHandler="org.eclipse.fordiac.ide.application.handlers.GotoChildHandler"
              id="org.eclipse.fordiac.ide.application.commands.gotochild"
-             name="Go To Child">
+             name="%command.goToChild.name">
     </command>
     <command categoryId="org.eclipse.fordiac.ide.commands.category"
              id="org.eclipse.fordiac.ide.application.commands.gotopinunder"
-             name="Go To Pin Below">
+             name="%command.goToPinBelow.name">
     </command>
     <command categoryId="org.eclipse.fordiac.ide.commands.category"
              id="org.eclipse.fordiac.ide.application.commands.gotopinabove"
-             name="Go To Pin Below">
+             name="%command.goToPinAbove.name">
     </command>
     <command categoryId="org.eclipse.fordiac.ide.commands.category"
              id="org.eclipse.fordiac.ide.application.commands.followLeftConnection"
-             name="Follow Left Connection">
+             name="%command.followLeftConnection.name">
     </command>
     <command categoryId="org.eclipse.fordiac.ide.commands.category"
              id="org.eclipse.fordiac.ide.application.commands.followRightConnection"
-             name="Follow Right Connection">
+             name="%command.followRightConnection.name">
     </command>
     <command categoryId="org.eclipse.fordiac.ide.commands.category"
              id="org.eclipse.fordiac.ide.application.commands.createConnectionAtSubappInterface"
@@ -465,14 +457,6 @@
              defaultHandler="org.eclipse.fordiac.ide.application.handlers.ToggleConnectionsHandler"
              id="org.eclipse.fordiac.ide.application.commands.toggleConnections"
              name="Toggle Connections Visibility">
-    </command>
-    <command categoryId="org.eclipse.fordiac.ide.commands.category"
-             defaultHandler="org.eclipse.fordiac.ide.application.handlers.ToggleVirtualGroupInterfaceHandler"
-             id="org.eclipse.fordiac.ide.application.commands.toggleVirtualGroupInterfaces"
-             name="Toggle Virtual Group Interfaces">
-      <state class="org.eclipse.ui.handlers.RegistryToggleState"
-             id="org.eclipse.ui.commands.toggleState">
-      </state>
     </command>
     <command categoryId="org.eclipse.fordiac.ide.commands.category"
              defaultHandler="org.eclipse.fordiac.ide.application.handlers.InsertFB"
@@ -540,7 +524,7 @@
           name="Convert Untyped Subapp To Group">
     </command>
     <command
-          categoryId="org.eclipse.fordiacpopup:org.eclipse.ui.popup.any?endof=org.eclipse.gef.group.rest.ide.commands.category"
+          categoryId="org.eclipse.fordiac.ide.commands.category"
           defaultHandler="org.eclipse.fordiac.ide.application.handlers.ConvertToSubappHandler"
           id="org.eclipse.fordiac.ide.application.commands.convertToSubapp"
           name="Convert Group to Untyped Subapp">
@@ -564,6 +548,14 @@
              id="org.eclipse.ui.commands.toggleState">
       </state>
     </command>
+    <command
+          categoryId="org.eclipse.fordiac.ide.commands.category"
+          description="%command.toggleBoolValue.description"
+          id="org.eclipse.fordiac.ide.application.commands.toggleBoolValue"
+          name="%command.toggleBoolValue.name"/>
+    <command id="org.eclipse.fordiac.ide.application.commands.quickFix" 
+    	  name="%command.quickFix.name" 
+    	  description="%command.quickFix.description"/> 
   </extension>
   
   <extension point="org.eclipse.ui.commandImages">
@@ -574,8 +566,6 @@
   </extension>
   
   <extension point="org.eclipse.ui.handlers">
-  
- <!-- HANDLER FOR FOLLOW LEFT CONNECTION, SECOND IS FOR OVERRIDING THE CONFLICTING SHORTCUT -->
     <handler class="org.eclipse.fordiac.ide.application.handlers.FollowLeftConnectionHandler"
              commandId="org.eclipse.fordiac.ide.application.commands.followLeftConnection">
 	  <activeWhen>
@@ -589,21 +579,6 @@
         </with>
       </activeWhen>
     </handler>
-    
-    <handler class="org.eclipse.fordiac.ide.application.handlers.FollowLeftConnectionHandler"
-             commandId="org.eclipse.ui.edit.text.goto.wordPrevious">
-	  <activeWhen>
-		<with variable="selection">
-			<count value="1"/>
-        	<iterate>
-            	<or>
-              		<instanceof value="org.eclipse.fordiac.ide.gef.editparts.InterfaceEditPart" />
-            	</or>
-          	</iterate>
-        </with>        	
-      </activeWhen>
-    </handler>
-    
     <handler class="org.eclipse.fordiac.ide.application.handlers.FollowLeftTargetPinConnectionHandler"
              commandId="org.eclipse.fordiac.ide.application.commands.followLeftConnection">
 	  <activeWhen>
@@ -618,22 +593,6 @@
       </activeWhen>
     </handler>
     
-    <handler class="org.eclipse.fordiac.ide.application.handlers.FollowLeftTargetPinConnectionHandler"
-             commandId="org.eclipse.ui.edit.text.goto.wordPrevious">
-	  <activeWhen>
-		<with variable="selection">
-			<count value="1"/>
-        	<iterate>
-            	<or>
-              		<instanceof value="org.eclipse.fordiac.ide.application.editparts.TargetInterfaceElementEditPart" />
-            	</or>
-          	</iterate>
-        </with>        	
-      </activeWhen>
-    </handler>
-    
-    
-<!-- HANDLER FOR FOLLOW RIGHT CONNECTION, SECOND IS FOR OVERRIDING THE CONFLICTING SHORTCUT -->
     <handler class="org.eclipse.fordiac.ide.application.handlers.FollowRightConnectionHandler"
              commandId="org.eclipse.fordiac.ide.application.commands.followRightConnection">
 	  <activeWhen>
@@ -647,22 +606,7 @@
         </with>
       </activeWhen>
     </handler>
-    
-    <handler class="org.eclipse.fordiac.ide.application.handlers.FollowRightConnectionHandler"
-             commandId="org.eclipse.ui.edit.text.goto.wordNext">
-	  <activeWhen>
-        <with variable="selection">
-			<count value="1"/>
-        	<iterate>
-            	<or>
-              		<instanceof value="org.eclipse.fordiac.ide.gef.editparts.InterfaceEditPart" />
-            	</or>
-          	</iterate>
-        </with>
-      </activeWhen>
-    </handler>
-    
-     <handler class="org.eclipse.fordiac.ide.application.handlers.FollowRightTargetPinConnectionHandler"
+	<handler class="org.eclipse.fordiac.ide.application.handlers.FollowRightTargetPinConnectionHandler"
              commandId="org.eclipse.fordiac.ide.application.commands.followRightConnection">
 	  <activeWhen>
         <with variable="selection">
@@ -674,24 +618,8 @@
           	</iterate>
         </with>
       </activeWhen>
-    </handler>
+    </handler>    
     
-    <handler class="org.eclipse.fordiac.ide.application.handlers.FollowRightTargetPinConnectionHandler"
-             commandId="org.eclipse.ui.edit.text.goto.wordNext">
-	  <activeWhen>
-		<with variable="selection">
-			<count value="1"/>
-        	<iterate>
-            	<or>
-              		<instanceof value="org.eclipse.fordiac.ide.application.editparts.TargetInterfaceElementEditPart" />
-            	</or>
-          	</iterate>
-        </with>        	
-      </activeWhen>
-    </handler>
-    
-    
-    <!-- HANDLER FOR Go TO PIN ABOVE, SECOND IS FOR OVERRIDING THE CONFLICTING SHORTCUT -->
     <handler class="org.eclipse.fordiac.ide.application.handlers.GotoPinAboveHandler"
              commandId="org.eclipse.fordiac.ide.application.commands.gotopinabove">
 	  <activeWhen>
@@ -699,23 +627,8 @@
       </activeWhen>
     </handler>
     
-    <handler class="org.eclipse.fordiac.ide.application.handlers.GotoPinAboveHandler"
-             commandId="org.eclipse.ui.edit.text.scroll.lineUp">
-	  <activeWhen>
-        <reference definitionId="org.eclipse.fordiac.ide.application.NavigrationInterfaceElementSelection" />
-      </activeWhen>
-    </handler>
-    
- 	<!-- HANDLER FOR Go TO PIN BELOW, SECOND IS FOR OVERRIDING THE CONFLICTING SHORTCUT -->
     <handler class="org.eclipse.fordiac.ide.application.handlers.GotoPinUnderHandler"
              commandId="org.eclipse.fordiac.ide.application.commands.gotopinunder">
-	  <activeWhen>
-        <reference definitionId="org.eclipse.fordiac.ide.application.NavigrationInterfaceElementSelection" />
-      </activeWhen>
-    </handler>
-    
-    <handler class="org.eclipse.fordiac.ide.application.handlers.GotoPinUnderHandler"
-             commandId="org.eclipse.ui.edit.text.scroll.lineDown">
 	  <activeWhen>
         <reference definitionId="org.eclipse.fordiac.ide.application.NavigrationInterfaceElementSelection" />
       </activeWhen>
@@ -750,25 +663,7 @@
             <test property="org.eclipse.fordiac.ide.application.utilities.isFBInterfaceElementIsFreeAndPartOfSubapp" />
           </and>
         </activeWhen>
-    </handler>
-    <handler class="org.eclipse.fordiac.ide.application.handlers.FocusOnPredecessor"
-             commandId="org.eclipse.fordiac.ide.application.commands.focusOnPredecessor">
-      <activeWhen>
-        <and>
-          <reference definitionId="org.eclipse.fordiac.ide.application.FocusOnActivation" />
-          <with variable="selection">
-            <iterate ifEmpty="false">
-              <or>
-                <instanceof value="org.eclipse.fordiac.ide.model.libraryElement.FBNetworkElement">
-                </instanceof>
-                <instanceof value="org.eclipse.fordiac.ide.application.editparts.AbstractFBNElementEditPart">
-                </instanceof>
-              </or>
-            </iterate>
-          </with>
-        </and>
-      </activeWhen>
-    </handler>
+    </handler>    
     <handler class="org.eclipse.fordiac.ide.application.handlers.UpdateFBTypeHandler"
              commandId="org.eclipse.fordiac.ide.application.commands.updateFBType">
       <activeWhen>
@@ -782,12 +677,6 @@
             </or>
           </iterate>
         </with>
-      </activeWhen>
-    </handler>
-    <handler class="org.eclipse.fordiac.ide.application.handlers.ClearFocusOn"
-             commandId="org.eclipse.fordiac.ide.application.commands.clearFocusOn">
-      <activeWhen>
-        <reference definitionId="org.eclipse.fordiac.ide.application.FocusOnActivation" />
       </activeWhen>
     </handler>
     <handler class="org.eclipse.fordiac.ide.application.handlers.FlattenSubApplication"
@@ -915,81 +804,122 @@
 	<handler class="org.eclipse.fordiac.ide.application.handlers.FordiacQuickFixHandler"
              commandId="org.eclipse.jdt.ui.edit.text.java.correction.assist.proposals">
 	</handler>
+	 <handler
+	       class="org.eclipse.fordiac.ide.application.handlers.ToggleBoolValueHandler"
+	       commandId="org.eclipse.fordiac.ide.application.commands.toggleBoolValue">
+	    <activeWhen>
+	       <with
+	             variable="selection">
+	          <iterate
+	                ifEmpty="false"
+	                operator="and">
+	             <instanceof
+	                   value="org.eclipse.fordiac.ide.gef.editparts.ValueEditPart">
+	             </instanceof>
+	          </iterate>
+	       </with>
+	    </activeWhen>
+	    <enabledWhen>
+	       <with
+	             variable="activeEditor">
+	          <adapt
+	                type="org.eclipse.fordiac.ide.model.libraryElement.FBNetwork">
+	          </adapt>
+	       </with>
+	    </enabledWhen>
+	 </handler>
+	<handler class="org.eclipse.fordiac.ide.application.handlers.FordiacQuickFixHandler" commandId="org.eclipse.fordiac.ide.application.commands.quickFix">
+		<enabledWhen>
+			<with variable="selection">
+				<count value="1"> </count>
+					<iterate>
+						<test property="org.eclipse.fordiac.ide.application.properties.repairSupported"> </test>
+					</iterate>
+				</with>
+		</enabledWhen>
+	</handler>
   </extension>
   
+  <extension
+		point="org.eclipse.ui.contexts">
+	<context
+		id="org.eclipse.fordiac.ide.fbnetwork"
+		description="%context.fbnetworkEditing.description"
+		name="%context.fbnetworkEditing.name"
+		parentId="org.eclipse.fordiac.ide.gef">
+	</context>
+  </extension> 
+  
   <extension point="org.eclipse.ui.bindings">
-    <key commandId="org.eclipse.fordiac.ide.application.commands.clearFocusOn"
-         contextId="org.eclipse.ui.contexts.window"
-         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-         sequence="M1+6">
-    </key>
     <key commandId="org.eclipse.fordiac.ide.application.commands.gotoparent"
-         contextId="org.eclipse.ui.contexts.window"
+         contextId="org.eclipse.fordiac.ide.fbnetwork"
          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-         sequence="M1+M2+ARROW_UP">
-    </key>
+         sequence="M1+M2+ARROW_UP"/>
     <key commandId="org.eclipse.fordiac.ide.application.commands.gotochild"
-         contextId="org.eclipse.ui.contexts.window"
+         contextId="org.eclipse.fordiac.ide.fbnetwork"
          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-         sequence="M1+M2+ARROW_DOWN">
-    </key>
+         sequence="M1+M2+ARROW_DOWN"/>
     <key commandId="org.eclipse.fordiac.ide.application.commands.gotopinunder"
-         contextId="org.eclipse.ui.contexts.window"
+         contextId="org.eclipse.fordiac.ide.fbnetwork"
          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-         sequence="M1+ARROW_DOWN">
-    </key>
+         sequence="M1+ARROW_DOWN"/>
     <key commandId="org.eclipse.fordiac.ide.application.commands.gotopinabove"
-         contextId="org.eclipse.ui.contexts.window"
+         contextId="org.eclipse.fordiac.ide.fbnetwork"
          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-         sequence="M1+ARROW_UP">
-    </key>
+         sequence="M1+ARROW_UP"/>
     <key commandId="org.eclipse.fordiac.ide.application.commands.followLeftConnection"
-         contextId="org.eclipse.ui.contexts.window"
+         contextId="org.eclipse.fordiac.ide.fbnetwork"
          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-         sequence="M1+ARROW_LEFT">
-    </key>
+         sequence="M1+ARROW_LEFT"/>
     <key commandId="org.eclipse.fordiac.ide.application.commands.followRightConnection"
-         contextId="org.eclipse.ui.contexts.window"
+         contextId="org.eclipse.fordiac.ide.fbnetwork"
          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-         sequence="M1+ARROW_RIGHT">
-    </key>
+         sequence="M1+ARROW_RIGHT"/>
     <key commandId="org.eclipse.fordiac.ide.application.commands.connectThrough"
-         contextId="org.eclipse.ui.contexts.window"
+         contextId="org.eclipse.fordiac.ide.fbnetwork"
          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-         sequence="M1+B">
-    </key>
+         sequence="M1+B"/>
     <key commandId="org.eclipse.fordiac.ide.application.commands.toggleConnections"
-         contextId="org.eclipse.ui.contexts.window"
+         contextId="org.eclipse.fordiac.ide.fbnetwork"
          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-         sequence="M1+T">
-    </key>
+         sequence="M1+T"/>
+    <key commandId="org.eclipse.fordiac.ide.application.commands.mapTo"
+		 contextId="org.eclipse.fordiac.ide.fbnetwork"
+		 schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+		 sequence="M1+M2+M"/>
+    <key commandId="org.eclipse.fordiac.ide.application.commands.createConnectionAtSubappInterface"
+         contextId="org.eclipse.fordiac.ide.fbnetwork"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         sequence="M1+M2+F"/>
+    <key commandId="org.eclipse.fordiac.ide.application.commands.aggressiveConDelete"
+		 contextId="org.eclipse.fordiac.ide.fbnetwork"
+		 schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+		 sequence="M2+DEL"/>
+	<key commandId="org.eclipse.fordiac.ide.application.commands.followRightConnection"
+		 contextId="org.eclipse.fordiac.ide.fbnetwork"
+	     schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	     sequence="M1+ARROW_RIGHT"/>	
+    <key contextId="org.eclipse.fordiac.ide.fbnetwork"
+	     commandId="org.eclipse.fordiac.ide.application.commands.followLeftConnection"
+	     schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	     sequence="M1+ARROW_LEFT"/>
+	<key commandId="org.eclipse.fordiac.ide.application.commands.gotopinabove"
+         contextId="org.eclipse.fordiac.ide.fbnetwork"
+		 schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         sequence="CTRL+ARROW_UP"/>
+    <key commandId="org.eclipse.fordiac.ide.application.commands.gotopinunder"
+         contextId="org.eclipse.fordiac.ide.fbnetwork"
+		 schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         sequence="CTRL+ARROW_DOWN"/>
     <key
-          commandId="org.eclipse.fordiac.ide.application.commands.mapTo"
-          contextId="org.eclipse.ui.contexts.window"
+          commandId="org.eclipse.fordiac.ide.application.commands.toggleBoolValue"
+          contextId="org.eclipse.fordiac.ide.fbnetwork"
           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-          sequence="M1+M2+M">
-    </key>
-    <key
-          commandId="org.eclipse.fordiac.ide.application.commands.createConnectionAtSubappInterface"
-          contextId="org.eclipse.ui.contexts.window"
-          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-          sequence="M1+M2+F">
-    </key>
-    <key
-          commandId="org.eclipse.fordiac.ide.application.commands.aggressiveConDelete"
-          contextId="org.eclipse.ui.contexts.window"
-          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-          sequence="M2+DEL">
-    </key>
+          sequence="M1+M2+Q">
+    </key>    
   </extension>
   
   <extension point="org.eclipse.ui.menus">
-    <menuContribution locationURI="menu:navigate?after=additions">
-      <command commandId="org.eclipse.fordiac.ide.application.commands.focusOnPredecessor" />
-      <command commandId="org.eclipse.fordiac.ide.application.commands.clearFocusOn"
-               mnemonic="S">
-      </command>
-    </menuContribution>
     <menuContribution locationURI="menu:navigate?after=goTo">
       <command commandId="org.eclipse.fordiac.ide.application.commands.gotoparent"
                icon="platform:/plugin/org.eclipse.search/icons/full/elcl16/search_prev.png"/>
@@ -1073,6 +1003,20 @@
           </with>
         </visibleWhen>
       </command>
+      <command
+            commandId="org.eclipse.fordiac.ide.application.commands.toggleBoolValue"
+            label="%command.toggleBoolValue.name"
+            tooltip="%command.toggleBoolValue.description">
+         <visibleWhen
+               checkEnabled="false">
+            <with
+                  variable="activeEditor">
+               <adapt
+                     type="org.eclipse.fordiac.ide.model.libraryElement.FBNetwork">
+               </adapt>
+            </with>
+         </visibleWhen>
+      </command>
     </menuContribution>
     <menuContribution allPopups="false"
                       locationURI="popup:org.eclipse.ui.popup.any?after=additions">
@@ -1088,6 +1032,14 @@
             <test property="org.eclipse.fordiac.ide.application.utilities.isNoReadOnlyEditor"/>
           </and>
         </visibleWhen>
+      </command>
+      <command
+            commandId="org.eclipse.fordiac.ide.application.commands.toggleBoolValue"
+            label="%command.toggleBoolValue.name"
+            tooltip="%command.toggleBoolValue.description">
+         <visibleWhen
+               checkEnabled="true">
+         </visibleWhen>
       </command>
     </menuContribution>
     <menuContribution locationURI="menu:org.eclipse.4diac.ide.source.menu?after=editGroup">
@@ -1159,17 +1111,6 @@
                  icon="fordiacimage://ICON_HIDE_DATA"
                  id="org.eclipse.fordiac.ide.application.toolbars.fordiacToolbar"
                  tooltip="Hide Data Connections"
-                 style="toggle">
-        </command>
-        <command commandId="org.eclipse.fordiac.ide.application.commands.clearFocusOn"
-                 icon="fordiacimage://ICON_FB"
-                 id="org.eclipse.fordiac.ide.application.toolbars.fordiacToolbar"
-                 tooltip="Clear Focus-On">
-        </command>
-        <command commandId="org.eclipse.fordiac.ide.application.commands.toggleVirtualGroupInterfaces"
-                 icon="fordiacimage://ICON_HIDE_EVENT"
-                 id="org.eclipse.fordiac.ide.application.toolbars.fordiacToolbar"
-                 tooltip="Toggle Virtual Group Interfaces"
                  style="toggle">
         </command>
       </toolbar>
@@ -1714,12 +1655,6 @@
             </instanceof>
           </or>
         </iterate>
-      </with>
-    </definition>
-    <definition id="org.eclipse.fordiac.ide.application.FocusOnActivation">
-      <with variable="activeEditor">
-        <adapt type="org.eclipse.fordiac.ide.model.libraryElement.FBNetwork">
-        </adapt>
       </with>
     </definition>
     <definition id="org.eclipse.fordiac.ide.application.FBNSelection">

@@ -236,6 +236,13 @@
 				type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget">
 			</adapter>
 		</factory>
+		<factory
+			adaptableType="org.eclipse.fordiac.ide.deployment.debug.DeploymentDebugStackFrame"
+			class="org.eclipse.fordiac.ide.deployment.debug.ui.actions.DeploymentDebugViewActionProviderFactory">
+			<adapter
+				type="org.eclipse.debug.internal.ui.viewers.model.provisional.IViewActionProvider">
+			</adapter>
+		</factory>
 	</extension>
 	<extension
 		point="org.eclipse.ui.commands">
@@ -489,6 +496,53 @@
 				</with>
 			</enabledWhen>
 		</handler>
+		<handler
+			class="org.eclipse.fordiac.ide.deployment.debug.ui.handler.ToggleBoolValueHandler"
+			commandId="org.eclipse.fordiac.ide.application.commands.toggleBoolValue">
+			<activeWhen>
+				<with
+					variable="selection">
+					<iterate
+						ifEmpty="false"
+						operator="and">
+						<instanceof
+							value="org.eclipse.fordiac.ide.deployment.debug.ui.editparts.WatchValueEditPart">
+						</instanceof>
+					</iterate>
+				</with>
+			</activeWhen>
+		</handler>
+		<handler
+			class="org.eclipse.fordiac.ide.deployment.debug.ui.handler.ToggleBoolWatchHandler"
+			commandId="org.eclipse.fordiac.ide.application.commands.toggleBoolValue">
+			<activeWhen>
+				<with
+					variable="selection">
+					<iterate
+						ifEmpty="false"
+						operator="and">
+						<instanceof
+							value="org.eclipse.fordiac.ide.deployment.debug.watch.IVarDeclarationWatch">
+						</instanceof>
+					</iterate>
+				</with>
+			</activeWhen>
+		</handler>
+	</extension>
+	<extension
+		point="org.eclipse.ui.bindings">
+		<key
+			commandId="org.eclipse.fordiac.ide.application.commands.toggleBoolValue"
+			contextId="org.eclipse.debug.ui.debugging"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M1+M2+Q">
+		</key>
+		<key
+			commandId="org.eclipse.fordiac.ide.deployment.debug.ui.triggerEvent"
+			contextId="org.eclipse.debug.ui.debugging"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M1+M2+E">
+		</key>
 	</extension>
 	<extension
 		point="org.eclipse.ui.menus">
@@ -603,7 +657,7 @@
 			</command>
 			<command
 				commandId="org.eclipse.fordiac.ide.deployment.debug.ui.force"
-				disabledIcon="platform:/plugin/org.eclipse.debug.ui/icons/full/obj16/write_disabled.png"
+				disabledIcon="platform:/plugin/org.eclipse.debug.ui/icons/full/obj16/write_obj_disabled.png"
 				icon="platform:/plugin/org.eclipse.debug.ui/icons/full/obj16/write_obj.png"
 				label="Force Value..."
 				tooltip="Force the watch value">
@@ -679,7 +733,7 @@
 			</command>
 			<command
 				commandId="org.eclipse.fordiac.ide.deployment.debug.ui.force"
-				disabledIcon="platform:/plugin/org.eclipse.debug.ui/icons/full/obj16/write_disabled.png"
+				disabledIcon="platform:/plugin/org.eclipse.debug.ui/icons/full/obj16/write_obj_disabled.png"
 				icon="platform:/plugin/org.eclipse.debug.ui/icons/full/obj16/write_obj.png"
 				label="Force Value"
 				tooltip="Force the watch value">

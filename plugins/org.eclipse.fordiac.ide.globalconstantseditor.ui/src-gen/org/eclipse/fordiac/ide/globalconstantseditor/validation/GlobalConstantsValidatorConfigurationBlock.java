@@ -25,7 +25,6 @@ public class GlobalConstantsValidatorConfigurationBlock extends AbstractValidato
 
 	@Override
 	protected void fillSettingsPage(Composite composite, int nColumns, int defaultIndent) {
-		addComboBox(GlobalConstantsConfigurableIssueCodesProvider.DEPRECATED_MODEL_PART, "Deprecated Model Part", composite, defaultIndent);
 	}
 
 	@Override

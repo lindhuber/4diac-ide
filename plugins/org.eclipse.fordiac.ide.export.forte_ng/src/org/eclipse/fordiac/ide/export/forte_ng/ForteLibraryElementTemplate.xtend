@@ -24,6 +24,7 @@ import java.util.Set
 import org.eclipse.fordiac.ide.export.language.ILanguageSupport
 import org.eclipse.fordiac.ide.export.language.ILanguageSupportFactory
 import org.eclipse.fordiac.ide.model.libraryElement.AdapterDeclaration
+import org.eclipse.fordiac.ide.model.libraryElement.Event
 import org.eclipse.fordiac.ide.model.libraryElement.IInterfaceElement
 import org.eclipse.fordiac.ide.model.libraryElement.INamedElement
 import org.eclipse.fordiac.ide.model.libraryElement.LibraryElement
@@ -32,19 +33,17 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension org.eclipse.fordiac.ide.export.forte_ng.util.ForteNgExportUtil.*
 import static extension org.eclipse.xtext.EcoreUtil2.*
-import org.eclipse.fordiac.ide.model.libraryElement.Event
-import org.eclipse.emf.common.util.EList
 
 abstract class ForteLibraryElementTemplate<T extends LibraryElement> extends ForteNgExportTemplate {
 
 	@Accessors(PROTECTED_GETTER) final T type
 	final Map<VarDeclaration, ILanguageSupport> variableLanguageSupport
 
-	new(T type, String name, Path prefix) {
+	new(T type, String name, Path prefix, Map<?,?> options) {
 		super(name, prefix)
 		this.type = type;
 		variableLanguageSupport = type.getAllContentsOfType(VarDeclaration).toInvertedMap [
-			ILanguageSupportFactory.createLanguageSupport("forte_ng", it)
+			ILanguageSupportFactory.createLanguageSupport("forte_ng", it, options)
 		]
 	}
 

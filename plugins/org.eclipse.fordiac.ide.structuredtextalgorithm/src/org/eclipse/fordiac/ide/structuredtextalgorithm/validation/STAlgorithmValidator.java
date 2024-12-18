@@ -14,11 +14,17 @@ package org.eclipse.fordiac.ide.structuredtextalgorithm.validation;
 
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.fordiac.ide.model.libraryElement.BaseFBType;
 import org.eclipse.fordiac.ide.model.libraryElement.INamedElement;
 import org.eclipse.fordiac.ide.model.libraryElement.LibraryElementPackage;
+import org.eclipse.fordiac.ide.model.libraryElement.SimpleECAction;
+import org.eclipse.fordiac.ide.model.libraryElement.SimpleECState;
 import org.eclipse.fordiac.ide.model.libraryElement.SimpleFBType;
 import org.eclipse.fordiac.ide.structuredtextalgorithm.Messages;
 import org.eclipse.fordiac.ide.structuredtextalgorithm.resource.STAlgorithmResource;
@@ -58,12 +64,11 @@ public class STAlgorithmValidator extends AbstractSTAlgorithmValidator {
 	public static final String ISSUE_CODE_PREFIX = "org.eclipse.fordiac.ide.structuredtextalgorithm."; //$NON-NLS-1$
 	public static final String DUPLICATE_METHOD_OR_ALGORITHM_NAME = STAlgorithmValidator.ISSUE_CODE_PREFIX
 			+ "duplicateAlgorithmOrMethodName"; //$NON-NLS-1$
-	public static final String NO_ALGORITHM_FOR_INPUT_EVENT = STAlgorithmValidator.ISSUE_CODE_PREFIX
-			+ "noAlgorithmForInputEvent"; //$NON-NLS-1$
-	public static final String NO_INPUT_EVENT_FOR_ALGORITHM = STAlgorithmValidator.ISSUE_CODE_PREFIX
-			+ "noInputEventForAlgorithm"; //$NON-NLS-1$
+	public static final String MISSING_ALGORITHM = STAlgorithmValidator.ISSUE_CODE_PREFIX + "missingAlgorithm"; //$NON-NLS-1$
+	public static final String UNUSED_ALGORITHM = STAlgorithmValidator.ISSUE_CODE_PREFIX + "unusedAlgorithm"; //$NON-NLS-1$
 	public static final String VARIABLE_NAME_IN_USE_ON_INTERFACE = STAlgorithmValidator.ISSUE_CODE_PREFIX
 			+ "variableNameInUseOnInterface"; //$NON-NLS-1$
+	public static final String SHADOWING_FUNCTION = STAlgorithmValidator.ISSUE_CODE_PREFIX + "shadowingFunction"; //$NON-NLS-1$
 
 	@Check
 	public void checkControlFlow(final STAlgorithmBody body) {
@@ -129,7 +134,8 @@ public class STAlgorithmValidator extends AbstractSTAlgorithmValidator {
 	@Check
 	public void checkUniquenessOfSTAlgorithmSourceElementNamesAndFunctionNames(
 			final STFeatureExpression featureExpression) {
-		if (featureExpression.getFeature() instanceof STMethod) {
+		if (!getIssueSeverities(getContext(), featureExpression).isIgnored(SHADOWING_FUNCTION)
+				&& featureExpression.getFeature() instanceof STMethod) {
 			final IResourceDescriptions resourceDescriptions = this.resourceDescriptionsProvider
 					.getResourceDescriptions(featureExpression.getFeature().eResource());
 			final IResourceDescription resourceDescription = resourceDescriptions
@@ -141,11 +147,13 @@ public class STAlgorithmValidator extends AbstractSTAlgorithmValidator {
 					if (featureExpression.getFeature().getName()
 							.equalsIgnoreCase(description.getQualifiedName().toString())
 							&& !description.getEObjectURI().equals(EcoreUtil.getURI(featureExpression))) {
-						warning(MessageFormat.format(
-								Messages.STAlgorithmValidator_UnqualifiedMethodOrAlgorithmShadowingFunction,
-								featureExpression.getFeature().getName(),
-								description.getEObjectURI().toPlatformString(true)),
-								STCorePackage.Literals.ST_FEATURE_EXPRESSION__FEATURE);
+						addIssue(
+								MessageFormat.format(
+										Messages.STAlgorithmValidator_UnqualifiedMethodOrAlgorithmShadowingFunction,
+										featureExpression.getFeature().getName(),
+										description.getEObjectURI().toPlatformString(true)),
+								featureExpression, STCorePackage.Literals.ST_FEATURE_EXPRESSION__FEATURE,
+								SHADOWING_FUNCTION);
 					}
 				}
 			}
@@ -153,31 +161,45 @@ public class STAlgorithmValidator extends AbstractSTAlgorithmValidator {
 	}
 
 	@Check
-	public void checkAlgorithmForSimpleECAction(final STAlgorithmSource source) {
+	public void checkMissingAlgorithm(final STAlgorithmSource source) {
 		if (source.eResource() instanceof final STAlgorithmResource resource
 				&& resource.getInternalLibraryElement() instanceof final SimpleFBType simpleFBType) {
-			simpleFBType.getSimpleECStates().stream().flatMap(state -> state.getSimpleECActions().stream())
-					.filter(action -> simpleFBType.getAlgorithm().stream()
-							.noneMatch(alg -> alg.getName().equalsIgnoreCase(action.getAlgorithm()))
-							&& source.getElements().stream().filter(STAlgorithm.class::isInstance)
-									.noneMatch(alg -> alg.getName().equalsIgnoreCase(action.getAlgorithm())))
-					.forEach(action -> acceptError(
-							MessageFormat.format(Messages.STAlgorithmValidator_MissingAlgorithmForECState,
-									action.getAlgorithm(), action.getSimpleECState().getName()),
-							source, 0, 0, STAlgorithmValidator.NO_ALGORITHM_FOR_INPUT_EVENT,
-							action.getSimpleECState().getName()));
+			getAllReferencedAlgorithms(simpleFBType)
+					.filter(alg -> !hasSTAlgorithm(source, alg) && !hasNonSTAlgorithm(simpleFBType, alg))
+					.forEach(alg -> acceptError(
+							MessageFormat.format(Messages.STAlgorithmValidator_MissingAlgorithm, alg), source, 0, 0,
+							STAlgorithmValidator.MISSING_ALGORITHM, alg));
 		}
+	}
+
+	private static boolean hasSTAlgorithm(final STAlgorithmSource source, final String algorithm) {
+		return source.getElements().stream().filter(STAlgorithm.class::isInstance)
+				.anyMatch(alg -> alg.getName().equalsIgnoreCase(algorithm));
+	}
+
+	private static boolean hasNonSTAlgorithm(final SimpleFBType simpleFBType, final String algorithm) {
+		return simpleFBType.getAlgorithm().stream()
+				.filter(Predicate.not(org.eclipse.fordiac.ide.model.libraryElement.STAlgorithm.class::isInstance))
+				.anyMatch(alg -> alg.getName().equalsIgnoreCase(algorithm));
 	}
 
 	@Check
 	public void checkUnusedAlgorithm(final STAlgorithm algorithm) {
-		if ((algorithm.eResource() instanceof final STAlgorithmResource resource
-				&& resource.getInternalLibraryElement() instanceof final SimpleFBType simpleFBType)
-				&& simpleFBType.getSimpleECStates().stream().flatMap(state -> state.getSimpleECActions().stream())
-						.noneMatch(action -> action.getAlgorithm().equalsIgnoreCase(algorithm.getName()))) {
-			warning(MessageFormat.format(Messages.STAlgorithmValidator_UnusedAlgorithm, algorithm.getName()), algorithm,
-					LibraryElementPackage.eINSTANCE.getINamedElement_Name(),
-					STAlgorithmValidator.NO_INPUT_EVENT_FOR_ALGORITHM, algorithm.getName());
+		final String name = algorithm.getName();
+		if (name != null && algorithm.eResource() instanceof final STAlgorithmResource resource
+				&& resource.getInternalLibraryElement() instanceof final SimpleFBType simpleFBType
+				&& getAllReferencedAlgorithms(simpleFBType).noneMatch(reference -> reference.equalsIgnoreCase(name))) {
+			addIssue(MessageFormat.format(Messages.STAlgorithmValidator_UnusedAlgorithm, name), algorithm,
+					LibraryElementPackage.eINSTANCE.getINamedElement_Name(), STAlgorithmValidator.UNUSED_ALGORITHM,
+					name);
 		}
+	}
+
+	private static Stream<String> getAllReferencedAlgorithms(final SimpleFBType simpleFBType) {
+		return getAllECActions(simpleFBType).map(SimpleECAction::getAlgorithm).filter(Objects::nonNull);
+	}
+
+	private static Stream<SimpleECAction> getAllECActions(final SimpleFBType simpleFBType) {
+		return simpleFBType.getSimpleECStates().stream().map(SimpleECState::getSimpleECActions).flatMap(List::stream);
 	}
 }

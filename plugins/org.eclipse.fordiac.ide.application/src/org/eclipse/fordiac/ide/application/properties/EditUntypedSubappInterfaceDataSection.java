@@ -27,6 +27,7 @@ import org.eclipse.fordiac.ide.application.commands.CreateSubAppInterfaceElement
 import org.eclipse.fordiac.ide.application.commands.ResizeGroupOrSubappCommand;
 import org.eclipse.fordiac.ide.application.commands.ResizingSubappInterfaceCreationCommand;
 import org.eclipse.fordiac.ide.application.utilities.GetEditPartFromGraficalViewerHelper;
+import org.eclipse.fordiac.ide.gef.nat.DefaultImportCopyPasteLayerConfiguration;
 import org.eclipse.fordiac.ide.gef.nat.InitialValueEditorConfiguration;
 import org.eclipse.fordiac.ide.gef.nat.TypeDeclarationEditorConfiguration;
 import org.eclipse.fordiac.ide.gef.nat.VarDeclarationColumnAccessor;
@@ -91,15 +92,17 @@ public class EditUntypedSubappInterfaceDataSection extends AbstractEditInterface
 				VarDeclarationTableColumn.DEFAULT_COLUMNS_WITH_VISIBLE);
 		inputDataLayer.setConfigLabelAccumulator(new VarDeclarationConfigLabelAccumulator(outputProvider,
 				this::getAnnotationModel, VarDeclarationTableColumn.DEFAULT_COLUMNS_WITH_VISIBLE));
+		final NatTableColumnProvider<VarDeclarationTableColumn> columnProvider = new NatTableColumnProvider<>(
+				VarDeclarationTableColumn.DEFAULT_COLUMNS_WITH_VISIBLE);
 		outputTable = NatTableWidgetFactory
-				.createRowNatTable(outputsGroup, inputDataLayer,
-						new NatTableColumnProvider<>(VarDeclarationTableColumn.DEFAULT_COLUMNS_WITH_VISIBLE),
+				.createRowNatTable(outputsGroup, inputDataLayer, columnProvider,
 						new UntypedSubappInterfaceEditableRule(getSectionEditableRule(),
 								VarDeclarationTableColumn.DEFAULT_COLUMNS_WITH_VISIBLE, outputProvider),
 						null, this, true);
 		outputTable.addConfiguration(new InitialValueEditorConfiguration(outputProvider));
 		outputTable.addConfiguration(new TypeDeclarationEditorConfiguration(outputProvider));
 		outputTable.addConfiguration(new CheckBoxConfigurationNebula());
+		outputTable.addConfiguration(new DefaultImportCopyPasteLayerConfiguration(columnProvider, this));
 		outputTable.configure();
 	}
 
@@ -120,14 +123,16 @@ public class EditUntypedSubappInterfaceDataSection extends AbstractEditInterface
 				VarDeclarationTableColumn.DEFAULT_COLUMNS_WITH_VISIBLE_AND_VAR_CONFIG);
 		inputDataLayer.setConfigLabelAccumulator(new VarDeclarationConfigLabelAccumulator(inputProvider,
 				this::getAnnotationModel, VarDeclarationTableColumn.DEFAULT_COLUMNS_WITH_VISIBLE_AND_VAR_CONFIG));
-		inputTable = NatTableWidgetFactory.createRowNatTable(inputsGroup, inputDataLayer,
-				new NatTableColumnProvider<>(VarDeclarationTableColumn.DEFAULT_COLUMNS_WITH_VISIBLE_AND_VAR_CONFIG),
+		final NatTableColumnProvider<VarDeclarationTableColumn> columnProvider = new NatTableColumnProvider<>(
+				VarDeclarationTableColumn.DEFAULT_COLUMNS_WITH_VISIBLE_AND_VAR_CONFIG);
+		inputTable = NatTableWidgetFactory.createRowNatTable(inputsGroup, inputDataLayer, columnProvider,
 				new UntypedSubappInterfaceEditableRule(getSectionEditableRule(),
 						VarDeclarationTableColumn.DEFAULT_COLUMNS_WITH_VISIBLE_AND_VAR_CONFIG, inputProvider),
 				null, this, true);
 		inputTable.addConfiguration(new InitialValueEditorConfiguration(inputProvider));
 		inputTable.addConfiguration(new TypeDeclarationEditorConfiguration(inputProvider));
 		inputTable.addConfiguration(new CheckBoxConfigurationNebula());
+		inputTable.addConfiguration(new DefaultImportCopyPasteLayerConfiguration(columnProvider, this));
 		inputTable.configure();
 	}
 

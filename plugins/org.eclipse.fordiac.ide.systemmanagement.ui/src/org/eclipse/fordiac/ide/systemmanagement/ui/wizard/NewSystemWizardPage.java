@@ -51,8 +51,8 @@ public class NewSystemWizardPage extends WizardNewFileCreationPage {
 	}
 
 	public NewSystemWizardPage(final IStructuredSelection selection) {
-		super(FordiacMessages.NewSystem, selection);
-		this.setTitle(FordiacMessages.NewSystem);
+		super(Messages.NewSystemWizardPage_NewSystemName, selection);
+		this.setTitle(Messages.NewSystemWizardPage_Title);
 		this.setDescription(Messages.NewSystemWizardPage_CreateNewSystem);
 		this.setAllowExistingResources(true); // needed for correct duplicate type check
 	}
@@ -133,7 +133,7 @@ public class NewSystemWizardPage extends WizardNewFileCreationPage {
 
 	private Button createOpenApplicationGroup(final Composite parent) {
 		openApplicationCheckbox = new Button(parent, SWT.CHECK);
-		openApplicationCheckbox.setText(Messages.NewApplicationPage_OpenApplicationForEditing);
+		openApplicationCheckbox.setText(Messages.OpenApplicationForEditing);
 		openApplicationCheckbox.setSelection(true);
 		setPageComplete(validatePage());
 		openApplicationCheckbox.addListener(SWT.Selection,

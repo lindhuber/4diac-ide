@@ -18,14 +18,14 @@ import org.eclipse.osgi.util.NLS;
 public final class Messages extends NLS {
 
 	private static final String BUNDLE_NAME = "org.eclipse.fordiac.ide.structuredtextalgorithm.ui.messages"; //$NON-NLS-1$
+	public static String STAlgorithmCustomValidatorConfigurationBlock_ShadowingFunction;
+	public static String STAlgorithmCustomValidatorConfigurationBlock_UnusedAlgorithm;
 	public static String STAlgorithmLabelProvider_AlgorithmText;
 	public static String STAlgorithmLabelProvider_MethodText;
 	public static String STAlgorithmQuickfixProvider_Add_missing_algorithm;
-	public static String STAlgorithmQuickfixProvider_Add_missing_algorithm_for_input_event;
 	public static String STAlgorithmQuickfixProvider_CreateMissingInternalVariable;
 	public static String STAlgorithmQuickfixProvider_Remove_all_unused_algorithms;
 	public static String STAlgorithmQuickfixProvider_Remove_unused_algorithm;
-	public static String STAlgorithmQuickfixProvider_Remove_unused_algorithm_for_input_event;
 
 	static {
 		// initialize resource bundle

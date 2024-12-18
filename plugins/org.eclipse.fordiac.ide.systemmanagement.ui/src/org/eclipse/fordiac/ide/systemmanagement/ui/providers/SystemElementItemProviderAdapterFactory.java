@@ -15,6 +15,8 @@ package org.eclipse.fordiac.ide.systemmanagement.ui.providers;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.fordiac.ide.model.edit.providers.CFBInstanceItemProviderForSystem;
+import org.eclipse.fordiac.ide.model.edit.providers.UntypedSubAppItemProviderForSystem;
 import org.eclipse.fordiac.ide.model.libraryElement.FB;
 import org.eclipse.fordiac.ide.model.libraryElement.FBNetwork;
 import org.eclipse.fordiac.ide.model.libraryElement.provider.FBItemProvider;
@@ -58,10 +60,9 @@ public class SystemElementItemProviderAdapterFactory extends LibraryElementItemP
 				 */
 				@Override
 				public Object getParent(final Object object) {
-
 					final EObject cont = ((FB) object).eContainer();
-					if (cont instanceof FBNetwork) {
-						return ((FBNetwork) cont).eContainer();
+					if (cont instanceof final FBNetwork fbn) {
+						return fbn.eContainer();
 					}
 					return super.getParent(object);
 				}

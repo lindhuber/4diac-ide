@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2023 Profactor GmbH, TU Wien ACIN, fortiss GmbH
+ * Copyright (c) 2008, 2024 Profactor GmbH, TU Wien ACIN, fortiss GmbH
  * 							Primetals Technologies Austria GmbH
  *
  * This program and the accompanying materials are made available under the
@@ -16,7 +16,6 @@
  *******************************************************************************/
 package org.eclipse.fordiac.ide.model.commands.change;
 
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
@@ -29,7 +28,7 @@ import org.eclipse.fordiac.ide.model.commands.create.CreateSubAppInstanceCommand
 import org.eclipse.fordiac.ide.model.commands.create.DataConnectionCreateCommand;
 import org.eclipse.fordiac.ide.model.commands.create.EventConnectionCreateCommand;
 import org.eclipse.fordiac.ide.model.commands.create.FBCreateCommand;
-import org.eclipse.fordiac.ide.model.helpers.FBNetworkHelper;
+import org.eclipse.fordiac.ide.model.dataimport.MappingTargetCreator;
 import org.eclipse.fordiac.ide.model.libraryElement.AdapterDeclaration;
 import org.eclipse.fordiac.ide.model.libraryElement.AutomationSystem;
 import org.eclipse.fordiac.ide.model.libraryElement.CommunicationMappingTarget;
@@ -47,13 +46,14 @@ import org.eclipse.fordiac.ide.model.libraryElement.Mapping;
 import org.eclipse.fordiac.ide.model.libraryElement.MappingTarget;
 import org.eclipse.fordiac.ide.model.libraryElement.Resource;
 import org.eclipse.fordiac.ide.model.libraryElement.SubApp;
+import org.eclipse.fordiac.ide.model.libraryElement.TypedSubApp;
+import org.eclipse.fordiac.ide.model.libraryElement.UntypedSubApp;
 import org.eclipse.fordiac.ide.model.libraryElement.VarDeclaration;
 import org.eclipse.fordiac.ide.model.typelibrary.FBTypeEntry;
 import org.eclipse.fordiac.ide.model.typelibrary.SubAppTypeEntry;
 import org.eclipse.fordiac.ide.ui.errormessages.ErrorMessenger;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
-import org.eclipse.jdt.annotation.NonNull;
 
 public class MapToCommand extends Command implements ScopedCommand {
 	protected final FBNetworkElement srcElement;
@@ -158,21 +158,16 @@ public class MapToCommand extends Command implements ScopedCommand {
 	}
 
 	protected FBNetworkElement createTargetElement() {
-		FBNetworkElement created = null;
-		if (srcElement instanceof ConfigurableFB) {
-			created = createConfigureableFB();
-		} else if (srcElement instanceof FB) {
-			created = createTargetFB();
-		} else if (srcElement instanceof final SubApp subApp) {
-			if (subApp.isTyped()) {
-				created = createTargetTypedSubApp();
-			} else {
-				created = createTargetUntypedSubApp();
-			}
-		}
+		final FBNetworkElement created = switch (srcElement) {
+		case final ConfigurableFB confFB -> createConfigureableFB();
+		case final FB fb -> createTargetFB();
+		case final TypedSubApp typedSubapp -> createTargetTypedSubApp();
+		case final UntypedSubApp untypedSubapp -> createTargetUntypedSubApp();
+		default -> null;
+		};
 		if (created != null) {
 			created.setName(srcElement.getName());
-			transferFBParams(srcElement, created);
+			MappingTargetCreator.transferFBParams(srcElement, created);
 		}
 		return created;
 	}
@@ -192,10 +187,6 @@ public class MapToCommand extends Command implements ScopedCommand {
 	}
 
 	private FBNetworkElement createTargetTypedSubApp() {
-		if (srcElement instanceof SubApp) {
-			FBNetworkHelper.loadSubappNetwork(srcElement);
-		}
-
 		final CreateSubAppInstanceCommand cmd = new CreateSubAppInstanceCommand(
 				(SubAppTypeEntry) srcElement.getTypeEntry(), getTargetFBNetwork(), srcElement.getPosition());
 		cmd.execute();
@@ -205,32 +196,9 @@ public class MapToCommand extends Command implements ScopedCommand {
 	private FBNetworkElement createTargetUntypedSubApp() {
 		final SubApp element = LibraryElementFactory.eINSTANCE.createUntypedSubApp();
 		element.setPosition(EcoreUtil.copy(srcElement.getPosition()));
-		element.setInterface(LibraryElementFactory.eINSTANCE.createInterfaceList());
-		element.setInterface(EcoreUtil.copy(srcElement.getInterface()));
-		for (final IInterfaceElement ie : element.getInterface().getAllInterfaceElements()) {
-			ie.getInputConnections().clear();
-			ie.getOutputConnections().clear();
-		}
+		element.setInterface(srcElement.getInterface().copy());
 		getTargetFBNetwork().getNetworkElements().add(element);
 		return element;
-	}
-
-	protected static void transferFBParams(@NonNull final FBNetworkElement srcElement,
-			@NonNull final FBNetworkElement targetElement) {
-		final List<VarDeclaration> destInputs = targetElement.getInterface().getInputVars();
-		final List<VarDeclaration> srcInputs = srcElement.getInterface().getInputVars();
-
-		for (int i = 0; i < destInputs.size(); i++) {
-			final VarDeclaration srcVar = srcInputs.get(i);
-			final VarDeclaration dstVar = destInputs.get(i);
-
-			if ((null != srcVar.getValue()) && (!srcVar.getValue().getValue().isEmpty())) {
-				if (null == dstVar.getValue()) {
-					dstVar.setValue(LibraryElementFactory.eINSTANCE.createValue());
-				}
-				dstVar.getValue().setValue(srcVar.getValue().getValue());
-			}
-		}
 	}
 
 	private AutomationSystem getAutomationSystem() {
@@ -251,7 +219,7 @@ public class MapToCommand extends Command implements ScopedCommand {
 		}
 	}
 
-	private void checkInputConnections(@NonNull final IInterfaceElement interfaceElement) {
+	private void checkInputConnections(final IInterfaceElement interfaceElement) {
 
 		// Filter error markers
 		final var inputConnections = interfaceElement.getInputConnections().stream()
@@ -279,7 +247,7 @@ public class MapToCommand extends Command implements ScopedCommand {
 		});
 	}
 
-	private void checkOutputConnections(@NonNull final IInterfaceElement interfaceElement) {
+	private void checkOutputConnections(final IInterfaceElement interfaceElement) {
 
 		// filter out self-connections (handled by input connections) and error markers
 		final var outputConnections = interfaceElement.getOutputConnections().stream()
@@ -312,7 +280,7 @@ public class MapToCommand extends Command implements ScopedCommand {
 		});
 	}
 
-	private static boolean isSelfConnection(@NonNull final Connection connection) {
+	private static boolean isSelfConnection(final Connection connection) {
 		return connection.getSourceElement() == connection.getDestinationElement();
 	}
 

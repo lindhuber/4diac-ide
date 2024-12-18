@@ -57,7 +57,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobGroup;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.fordiac.ide.library.model.library.Manifest;
@@ -123,8 +122,9 @@ public enum LibraryManager {
 	private final HashMap<String, List<LibraryRecord>> stdlibraries = new HashMap<>();
 	private final HashMap<String, List<LibraryRecord>> libraries = new HashMap<>();
 
+	public static final Object FAMILY_FORDIAC_LIBRARY = new Object();
+
 	private IEventBroker eventBroker;
-	private JobGroup jobGroup;
 	private boolean uninitialised = true;
 	private final IResourceChangeListener libraryListener = new LibraryChangeListener();
 	private final Set<IProject> resolvingProjects = Collections.synchronizedSet(new HashSet<>());
@@ -160,7 +160,6 @@ public enum LibraryManager {
 		} catch (final IOException e) {
 			// empty
 		}
-		jobGroup = new JobGroup("LibraryManager JobGroup", 0, 0); //$NON-NLS-1$
 		addLibraryChangeListener();
 		uninitialised = false;
 	}
@@ -646,13 +645,17 @@ public enum LibraryManager {
 				resolveDependencies(project, typeLibrary);
 				return Status.OK_STATUS;
 			}
+
+			@Override
+			public boolean belongsTo(final Object family) {
+				return family == FAMILY_FORDIAC_LIBRARY;
+			}
 		};
 		job.setRule(project);
-		job.setJobGroup(jobGroup);
 		job.setPriority(Job.LONG);
-		job.schedule();
 		// act after job is done and has sent its POST_CHANGE notifications
 		job.addJobChangeListener(IJobChangeListener.onDone(c -> resolvingProjects.remove(project)));
+		job.schedule();
 	}
 
 	/**
@@ -670,30 +673,41 @@ public enum LibraryManager {
 	 * @param autoImport   if library should be automatically imported into project
 	 * @param resolve      define if dependencies should get resolved on import
 	 *                     (irrelevant if {@code autoImport} is false)
-	 * @return {@link java.net.URI} of the extracted library folder
+	 * @return {@link java.net.URI} of the extracted library folder encapsulated in
+	 *         a {@link DownloadResult}
 	 */
-	private java.net.URI libraryDownload(final String symbolicName, final VersionRange versionRange,
+	private DownloadResult<java.net.URI> libraryDownload(final String symbolicName, final VersionRange versionRange,
 			final Version preferred, final IProject project, final boolean autoImport, final boolean resolve) {
 		FordiacLogHelper.logInfo("Attempting to download library " + symbolicName + " with version " + versionRange //$NON-NLS-1$ //$NON-NLS-2$
 				+ " preferring " + preferred); //$NON-NLS-1$
 		final List<IArchiveDownloader> downloaders = TypeLibraryManager.listExtensions(DOWNLOADER_EXTENSION,
 				IArchiveDownloader.class);
-		Path archivePath;
+		DownloadResult<Path> dlResult;
+		final StringBuilder errors = new StringBuilder();
 		final VersionRange range = (versionRange == null || versionRange.isEmpty()) ? ALL_RANGE : versionRange;
 		for (final var downloader : downloaders) {
 			if (!downloader.isActive()) {
 				continue;
 			}
 			try {
-				archivePath = downloader.downloadLibrary(symbolicName, range, preferred);
-				if (archivePath != null) {
-					return extractLibrary(archivePath, project, autoImport, resolve);
+				dlResult = downloader.downloadLibrary(symbolicName, range, preferred);
+				if (dlResult.status() == DownloadResult.Status.OK) {
+					return new DownloadResult<>(extractLibrary(dlResult.result(), project, autoImport, resolve));
+				}
+				// ignore NO_CONFIG
+				if (dlResult.status() == DownloadResult.Status.NOT_FOUND
+						|| dlResult.status() == DownloadResult.Status.CONFIG_ERROR
+						|| dlResult.status() == DownloadResult.Status.ERROR) {
+					errors.append(" | "); //$NON-NLS-1$
+					errors.append(downloader.getName());
+					errors.append(": "); //$NON-NLS-1$
+					errors.append(dlResult.message());
 				}
 			} catch (final IOException e) {
 				FordiacLogHelper.logError(e.getMessage(), e);
 			}
 		}
-		return null;
+		return new DownloadResult<>(DownloadResult.Status.ERROR, errors.toString());
 	}
 
 	/**
@@ -713,9 +727,13 @@ public enum LibraryManager {
 						true);
 				return Status.OK_STATUS;
 			}
+
+			@Override
+			public boolean belongsTo(final Object family) {
+				return family == FAMILY_FORDIAC_LIBRARY;
+			}
 		};
 		job.setRule(project);
-		job.setJobGroup(jobGroup);
 		job.setPriority(Job.LONG);
 		job.schedule();
 	}
@@ -920,10 +938,11 @@ public enum LibraryManager {
 			}
 		}
 
-		final java.net.URI uri = libraryDownload(symbolicName, range, prefVersion, null, false, false);
+		final DownloadResult<java.net.URI> dlResult = libraryDownload(symbolicName, range, prefVersion, null, false,
+				false);
 
-		if (uri != null) {
-			rec = getLibraryRecord(libraries, symbolicName, uri);
+		if (dlResult.status() == DownloadResult.Status.OK) {
+			rec = getLibraryRecord(libraries, symbolicName, dlResult.result());
 			if (rec != null) {
 				return new ResolveNode(rec);
 			}
@@ -936,7 +955,7 @@ public enum LibraryManager {
 			}
 		}
 
-		return new ResolveNode(symbolicName, Messages.ErrorMarkerLibNotAvailable);
+		return new ResolveNode(symbolicName, Messages.ErrorMarkerLibNotAvailable + dlResult.message());
 	}
 
 	/**
@@ -1034,15 +1053,6 @@ public enum LibraryManager {
 	 */
 	void stopEventBroker() {
 		eventBroker.unsubscribe(handler);
-	}
-
-	/**
-	 * Returns the internal JobGroup used for all Jobs.
-	 *
-	 * @return JobGroup
-	 */
-	public JobGroup getJobGroup() {
-		return jobGroup;
 	}
 
 	private final EventHandler handler = event -> {
