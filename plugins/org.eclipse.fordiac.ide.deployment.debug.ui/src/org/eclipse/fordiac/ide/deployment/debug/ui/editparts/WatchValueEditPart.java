@@ -31,7 +31,6 @@ import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.fordiac.ide.application.Messages;
-import org.eclipse.fordiac.ide.deployment.debug.preferences.DeploymentDebugPreferences;
 import org.eclipse.fordiac.ide.deployment.debug.ui.DeploymentDebugModelPresentation;
 import org.eclipse.fordiac.ide.deployment.debug.watch.IVarDeclarationWatch;
 import org.eclipse.fordiac.ide.deployment.debug.watch.IWatch;
@@ -67,7 +66,6 @@ public class WatchValueEditPart extends AbstractWatchValueEditPart {
 		figure.setBorder(new MarginBorder(0, MONITORING_VALUE_LR_MARGIN, 0, MONITORING_VALUE_LR_MARGIN));
 		figure.setText(Messages.MonitoringEditPart_Not_Available);
 		figure.setMinimumSize(new Dimension(50, 1));
-		figure.setAlpha(DeploymentDebugPreferences.getMonitoringValueTransparency());
 		return figure;
 	}
 
@@ -140,6 +138,7 @@ public class WatchValueEditPart extends AbstractWatchValueEditPart {
 	protected void refreshVisuals() {
 		super.refreshVisuals();
 		getFigure().setText(getModel().getText());
+		getFigure().setForegroundColor(getWatchTextColor());
 		getFigure().setBackgroundColor(getWatchColor());
 		showPinValues(false);
 	}
@@ -153,6 +152,17 @@ public class WatchValueEditPart extends AbstractWatchValueEditPart {
 			return DeploymentDebugModelPresentation.getForceColor();
 		}
 		return DeploymentDebugModelPresentation.getWatchColor();
+	}
+
+	protected Color getWatchTextColor() {
+		final IWatch watch = getModel().getWatch();
+		if (!watch.isAlive()) {
+			return DeploymentDebugModelPresentation.getWatchErrorTextColor();
+		}
+		if (watch instanceof final IVarDeclarationWatch variableWatch && variableWatch.isForced()) {
+			return DeploymentDebugModelPresentation.getForceTextColor();
+		}
+		return DeploymentDebugModelPresentation.getWatchTextColor();
 	}
 
 	private static int maxLabelWidth = -1;

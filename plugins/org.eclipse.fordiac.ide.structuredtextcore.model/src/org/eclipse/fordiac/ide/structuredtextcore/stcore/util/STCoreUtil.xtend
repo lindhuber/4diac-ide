@@ -87,7 +87,6 @@ import org.eclipse.fordiac.ide.structuredtextcore.stcore.STCallNamedOutputArgume
 import org.eclipse.fordiac.ide.structuredtextcore.stcore.STCallUnnamedArgument
 import org.eclipse.fordiac.ide.structuredtextcore.stcore.STCaseCases
 import org.eclipse.fordiac.ide.structuredtextcore.stcore.STCoreFactory
-import org.eclipse.fordiac.ide.structuredtextcore.stcore.STCorePackage
 import org.eclipse.fordiac.ide.structuredtextcore.stcore.STExpression
 import org.eclipse.fordiac.ide.structuredtextcore.stcore.STExpressionSource
 import org.eclipse.fordiac.ide.structuredtextcore.stcore.STFeatureExpression
@@ -339,11 +338,11 @@ final class STCoreUtil {
 			STUnaryExpression case op.logical:
 				expectedType.equivalentAnyBitType
 			STBinaryExpression case op.arithmetic || op.range:
-				(expression === left ? right?.declaredResultType : left?.declaredResultType).equivalentAnyNumType.
-					commonSubtype(expectedType.equivalentAnyNumType)
+				expectedType.equivalentAnyNumType.getCompatibleType(
+					(expression === left ? right?.declaredResultType : left?.declaredResultType).equivalentAnyNumType)
 			STBinaryExpression case op.logical:
-				(expression === left ? right?.declaredResultType : left?.declaredResultType).equivalentAnyBitType.
-					commonSubtype(expectedType.equivalentAnyBitType)
+				expectedType.equivalentAnyBitType.getCompatibleType(
+					(expression === left ? right?.declaredResultType : left?.declaredResultType).equivalentAnyBitType)
 			STBinaryExpression case op.comparison:
 				expression === left ? right?.declaredResultType : left?.declaredResultType
 			STAssignment:
@@ -404,7 +403,7 @@ final class STCoreUtil {
 	def private static INamedElement computeExpectedType(STCallArgument argument) {
 		val featureExpression = argument.eContainer
 		if (featureExpression instanceof STFeatureExpression) {
-			val feature = featureExpression.featureNoresolve
+			val feature = featureExpression.feature
 			if (feature instanceof STStandardFunction) {
 				val expectedReturnType = switch (type: featureExpression.expectedType) { DataType: type }
 				val index = featureExpression.parameters.indexOf(argument)
@@ -414,29 +413,25 @@ final class STCoreUtil {
 						index)
 				}
 			} else {
-				argument.parameterNoresolve.featureType
+				argument.parameter.featureType
 			}
 		}
 	}
 
-	def package static dispatch getParameterNoresolve(STCallNamedInputArgument argument) {
-		switch (target : argument.eGet(STCorePackage.eINSTANCE.STCallNamedInputArgument_Parameter, false)) {
-			INamedElement case !target.eIsProxy: target
-		}
+	def package static dispatch getParameter(STCallNamedInputArgument argument) {
+		argument.parameter
 	}
 
-	def package static dispatch getParameterNoresolve(STCallNamedOutputArgument argument) {
-		switch (target : argument.eGet(STCorePackage.eINSTANCE.STCallNamedOutputArgument_Parameter, false)) {
-			INamedElement case !target.eIsProxy: target
-		}
+	def package static dispatch getParameter(STCallNamedOutputArgument argument) {
+		argument.parameter
 	}
 
-	def package static dispatch getParameterNoresolve(STCallUnnamedArgument argument) {
+	def package static dispatch getParameter(STCallUnnamedArgument argument) {
 		val featureExpression = argument.eContainer
 		if (featureExpression instanceof STFeatureExpression) {
 			val index = featureExpression.parameters.indexOf(argument)
 			if (index >= 0) {
-				val feature = featureExpression.featureNoresolve
+				val feature = featureExpression.feature
 				if (feature instanceof ICallable) {
 					val inputParameters = feature.inputParameters
 					val outputParameters = feature.outputParameters
@@ -451,12 +446,6 @@ final class STCoreUtil {
 						outputParameters.get(index - inputParameters.size - inOutParameters.size)
 				}
 			}
-		}
-	}
-
-	def package static getFeatureNoresolve(STFeatureExpression expr) {
-		switch (feature : expr.eGet(STCorePackage.eINSTANCE.STFeatureExpression_Feature, false)) {
-			INamedElement case !feature.eIsProxy: feature
 		}
 	}
 
@@ -584,18 +573,43 @@ final class STCoreUtil {
 		]
 	}
 
-	def static getEquivalentAnyNumType(INamedElement type) {
+	def static DataType getCompatibleType(DataType type, DataType other) {
+		if (type === null)
+			other
+		else if (other === null)
+			type
+		else if (type.isAssignableFrom(other) || other.isAssignableFrom(type))
+			type
+		else if (type instanceof AnyUnsignedType &&
+			(type.isAssignableFrom(other.equivalentAnyUnsignedType) ||
+				other.equivalentAnyUnsignedType.isAssignableFrom(type)))
+			type
+		else // fallback to other _only_ if type is not compatible
+			other
+	}
+
+	def static AnyNumType getEquivalentAnyNumType(INamedElement type) {
 		switch (type) {
 			BoolType: ElementaryTypes.SINT
 			ByteType: ElementaryTypes.USINT
 			WordType: ElementaryTypes.UINT
 			DwordType: ElementaryTypes.UDINT
 			LwordType: ElementaryTypes.ULINT
-			DataType: type
+			AnyNumType: type
 		}
 	}
 
-	def static getEquivalentAnyBitType(INamedElement type) {
+	def static AnyUnsignedType getEquivalentAnyUnsignedType(INamedElement type) {
+		switch (type) {
+			SintType: ElementaryTypes.USINT
+			IntType: ElementaryTypes.ULINT
+			DintType: ElementaryTypes.UDINT
+			LintType: ElementaryTypes.ULINT
+			AnyUnsignedType: type
+		}
+	}
+
+	def static AnyBitType getEquivalentAnyBitType(INamedElement type) {
 		switch (type) {
 			SintType,
 			UsintType: ElementaryTypes.BYTE
@@ -605,7 +619,7 @@ final class STCoreUtil {
 			UdintType: ElementaryTypes.DWORD
 			LintType,
 			UlintType: ElementaryTypes.LWORD
-			DataType: type
+			AnyBitType: type
 		}
 	}
 

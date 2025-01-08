@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.fordiac.ide.model.dataimport;
 
-import java.util.List;
-
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.fordiac.ide.model.helpers.BlockInstanceFactory;
 import org.eclipse.fordiac.ide.model.helpers.InterfaceListCopier;
@@ -24,7 +22,6 @@ import org.eclipse.fordiac.ide.model.libraryElement.LibraryElementFactory;
 import org.eclipse.fordiac.ide.model.libraryElement.Resource;
 import org.eclipse.fordiac.ide.model.libraryElement.TypedSubApp;
 import org.eclipse.fordiac.ide.model.libraryElement.UntypedSubApp;
-import org.eclipse.fordiac.ide.model.libraryElement.VarDeclaration;
 import org.eclipse.fordiac.ide.model.typelibrary.FBTypeEntry;
 
 public final class MappingTargetCreator {
@@ -45,29 +42,12 @@ public final class MappingTargetCreator {
 			created.setInterface(InterfaceListCopier.copy(srcElement.getInterface(), true, true));
 			created.setPosition(EcoreUtil.copy(srcElement.getPosition()));
 			if (srcElement instanceof final ConfigurableFB srcConfFB) {
-				setupConfigureableFB(srcConfFB, (ConfigurableFB) created);
+				((ConfigurableFB) created).setDataType(srcConfFB.getDataType());
 			}
 			created.setName(extractTargetFBName(targetFBName));
 			res.getFBNetwork().getNetworkElements().add(created);
 		}
 		return created;
-	}
-
-	public static void transferFBParams(final FBNetworkElement srcElement, final FBNetworkElement targetElement) {
-		final List<VarDeclaration> destInputs = targetElement.getInterface().getInputVars();
-		final List<VarDeclaration> srcInputs = srcElement.getInterface().getInputVars();
-
-		for (int i = 0; i < destInputs.size(); i++) {
-			final VarDeclaration srcVar = srcInputs.get(i);
-			final VarDeclaration dstVar = destInputs.get(i);
-
-			if ((srcVar.getValue() != null) && (!srcVar.getValue().getValue().isEmpty())) {
-				if (dstVar.getValue() == null) {
-					dstVar.setValue(LibraryElementFactory.eINSTANCE.createValue());
-				}
-				dstVar.getValue().setValue(srcVar.getValue().getValue());
-			}
-		}
 	}
 
 	private static FBNetworkElement createFBNetworkElement(final FBNetworkElement srcElement) {
@@ -77,11 +57,6 @@ public final class MappingTargetCreator {
 		case final UntypedSubApp untypedSubapp -> LibraryElementFactory.eINSTANCE.createUntypedSubApp();
 		default -> null;
 		};
-	}
-
-	private static void setupConfigureableFB(final ConfigurableFB srcConfFB, final ConfigurableFB targetConfFB) {
-		targetConfFB.setDataType(srcConfFB.getDataType());
-		targetConfFB.updateConfiguration();
 	}
 
 	private static String extractTargetFBName(final String targetFBName) {
