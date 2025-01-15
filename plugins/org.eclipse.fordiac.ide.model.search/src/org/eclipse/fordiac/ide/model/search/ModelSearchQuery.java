@@ -89,8 +89,8 @@ public class ModelSearchQuery implements ISearchQuery {
 	}
 
 	private List<ISearchContext> getSearchContexts() {
-		if (modelQuerySpec.getScope() == SearchScope.PROJECT && modelQuerySpec.getProject() != null) {
-			return Arrays.asList(new LiveSearchContext(modelQuerySpec.getProject()));
+		if (modelQuerySpec.scope() == SearchScope.PROJECT && modelQuerySpec.project() != null) {
+			return Arrays.asList(new LiveSearchContext(modelQuerySpec.project()));
 		}
 		// workspace scope
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -169,7 +169,7 @@ public class ModelSearchQuery implements ISearchQuery {
 				searchFBNetwork(subApp.getSubAppNetwork(), path, monitor);
 			}
 			if (fbnetworkElement.getInterface() != null) {
-				if (modelQuerySpec.isCheckedPinName()) {
+				if (modelQuerySpec.checkPinName()) {
 					final List<IInterfaceElement> matchingPins = fbnetworkElement.getInterface()
 							.getAllInterfaceElements().stream()
 							.filter(pin -> pin.getName() != null && compareStrings(pin.getName())).toList();
@@ -180,7 +180,7 @@ public class ModelSearchQuery implements ISearchQuery {
 						searchResult.addResults(matchingPins);
 					}
 				}
-				if (modelQuerySpec.isCheckedType()) {
+				if (modelQuerySpec.checkType()) {
 					searchInterface(fbnetworkElement.getInterface(), monitor);
 				}
 			}
@@ -278,21 +278,21 @@ public class ModelSearchQuery implements ISearchQuery {
 
 	private boolean matchEObject(final INamedElement modelElement, final IProgressMonitor monitor) {
 		SearchCanceledException.throwIfCanceled(monitor);
-		if (modelQuerySpec.isCheckedInstanceName()) {
+		if (modelQuerySpec.checkInstanceName()) {
 			final String name = modelElement.getName();
 			final boolean matchInstanceName = name != null && compareStrings(name);
 			if (matchInstanceName) {
 				return true;
 			}
 		}
-		if (modelQuerySpec.isCheckedComment()) {
+		if (modelQuerySpec.checkComments()) {
 			final String comment = modelElement.getComment();
 			final boolean matchComment = comment != null && compareStrings(comment);
 			if (matchComment) {
 				return true;
 			}
 		}
-		if (modelQuerySpec.isCheckedType()) {
+		if (modelQuerySpec.checkType()) {
 			if (modelElement instanceof final TypedConfigureableObject config) {
 				return compareStrings(config.getTypeName())
 						|| (config.getTypeEntry() != null && compareStrings(config.getTypeEntry().getFullTypeName()));
@@ -345,18 +345,18 @@ public class ModelSearchQuery implements ISearchQuery {
 		if (pattern.matchSearchString(toTest)) {
 			return true;
 		}
-		if (modelQuerySpec.isCheckExactMatching()) {
-			return toTest.equals(modelQuerySpec.getSearchString());
+		if (modelQuerySpec.checkExactMatching()) {
+			return toTest.equals(modelQuerySpec.searchString());
 		}
-		if (modelQuerySpec.isCheckCaseSensitive()) {
-			return toTest.contains(modelQuerySpec.getSearchString());
+		if (modelQuerySpec.checkCaseSensitive()) {
+			return toTest.contains(modelQuerySpec.searchString());
 		}
-		return toTest.toLowerCase().contains(modelQuerySpec.getSearchString().toLowerCase());
+		return toTest.toLowerCase().contains(modelQuerySpec.searchString().toLowerCase());
 	}
 
 	@Override
 	public String getLabel() {
-		return modelQuerySpec.getSearchString();
+		return modelQuerySpec.searchString();
 	}
 
 	@Override
