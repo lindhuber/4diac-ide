@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.fordiac.ide.model.typelibrary.TypeLibraryManager;
+import org.eclipse.fordiac.ide.model.typelibrary.TypeLibraryTags;
 import org.eclipse.fordiac.ide.ui.FordiacLogHelper;
 
 public class LibraryChangeListener implements IResourceChangeListener {
@@ -46,10 +47,14 @@ public class LibraryChangeListener implements IResourceChangeListener {
 		case IResource.PROJECT:
 			return delta.getKind() != IResourceDelta.REMOVED; // ignore deleted projects
 		case IResource.FILE:
+			// check manifest files
 			// information on previous linked status is not available on delete
-			if (delta.getResource() instanceof final IFile file
-					&& (file.isLinked() || delta.getKind() == IResourceDelta.REMOVED)
-					&& LibraryManager.MANIFEST.equals(file.getName()) && (delta.getKind() & MASK) != 0) {
+			if (delta.getResource() instanceof final IFile file && LibraryManager.MANIFEST.equals(file.getName())
+			// project manifest:
+					&& ((file.getParent() instanceof IProject && (delta.getKind() & IResourceDelta.ADDED) != 0)
+							// library manifest:
+							|| ((file.isLinked() || delta.getKind() == IResourceDelta.REMOVED)
+									&& (delta.getKind() & MASK) != 0))) {
 				final IProject project = file.getProject();
 				LibraryManager.INSTANCE.startResolveJob(project, TypeLibraryManager.INSTANCE.getTypeLibrary(project));
 
@@ -70,6 +75,7 @@ public class LibraryChangeListener implements IResourceChangeListener {
 
 	private static boolean isTypeLibraryFolder(final IContainer container) {
 		return container instanceof IFolder && container.getParent() instanceof IProject
-				&& LibraryManager.TYPE_LIB_FOLDER_NAME.equals(container.getName());
+				&& (TypeLibraryTags.STANDARD_LIB_FOLDER_NAME.equals(container.getName())
+						|| TypeLibraryTags.EXTERNAL_LIB_FOLDER_NAME.equals(container.getName()));
 	}
 }

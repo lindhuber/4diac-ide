@@ -94,19 +94,14 @@ final package class ExpressionAnnotations {
 							ElementaryTypes.TIME
 						else if (left instanceof AnyDateType && right instanceof AnyDateType)
 							ElementaryTypes.LTIME
-						else if (left.isAssignableFrom(right))
-							left
-						else if (right.isAssignableFrom(left))
-							right
+						else if (left instanceof AnyDurationType && right instanceof AnyDurationType)
+							left.commonSupertype(right)
 						else
-							null
-					} else if (expr.op.logical || expr.op.range) {
-						if (left.isAssignableFrom(right))
-							left
-						else if (right.isAssignableFrom(left))
-							right
-						else
-							null
+							commonSupertype(left.equivalentAnyNumType, right.equivalentAnyNumType)
+					} else if (expr.op.logical) {
+						commonSupertype(left.equivalentAnyBitType, right.equivalentAnyBitType)
+					} else if (expr.op.range) {
+						left.commonSupertype(right)
 					} else
 						null
 				} else if (declared)
@@ -206,7 +201,7 @@ final package class ExpressionAnnotations {
 	}
 
 	def package static INamedElement getResultType(STNumericLiteral expr) {
-		getDeclaredResultType(expr) ?: switch (result : expr.expectedType) {
+		expr.type ?: switch (result : expr.expectedType) {
 			DataType case result.isNumericValueValid(expr.value):
 				result
 			AnyUnsignedType:
@@ -227,7 +222,13 @@ final package class ExpressionAnnotations {
 				}
 			default:
 				null
-		} ?: switch (it : expr.value) {
+		} ?: getValueType(expr)
+	}
+
+	def package static INamedElement getDeclaredResultType(STNumericLiteral expr) { expr.type ?: getValueType(expr) }
+
+	def package static INamedElement getValueType(STNumericLiteral expr) {
+		switch (it : expr.value) {
 			Boolean: ElementaryTypes.BOOL
 			BigDecimal: ElementaryTypes.LREAL
 			BigInteger case checkRange(Byte.MIN_VALUE, Byte.MAX_VALUE): ElementaryTypes.SINT
@@ -238,8 +239,6 @@ final package class ExpressionAnnotations {
 			default: null
 		}
 	}
-
-	def package static INamedElement getDeclaredResultType(STNumericLiteral expr) { expr.type }
 
 	def package static INamedElement getResultType(STDateLiteral expr) { getDeclaredResultType(expr) }
 
@@ -258,17 +257,21 @@ final package class ExpressionAnnotations {
 	def package static INamedElement getDeclaredResultType(STDateAndTimeLiteral expr) { expr.type }
 
 	def package static INamedElement getResultType(STStringLiteral expr) {
-		getDeclaredResultType(expr) ?: switch (result : expr.expectedType) {
+		expr.type ?: switch (result : expr.expectedType) {
 			DataType case result.isStringValueValid(expr.value): result
 			default: null
-		} ?: if (expr.value.length == 1) {
+		} ?: getValueType(expr)
+	}
+
+	def package static INamedElement getDeclaredResultType(STStringLiteral expr) { expr.type ?: getValueType(expr) }
+
+	def package static INamedElement getValueType(STStringLiteral expr) {
+		if (expr.value.length == 1) {
 			if(expr.value.wide) ElementaryTypes.WCHAR else ElementaryTypes.CHAR
 		} else {
 			if(expr.value.wide) ElementaryTypes.WSTRING else ElementaryTypes.STRING
 		}
 	}
-
-	def package static INamedElement getDeclaredResultType(STStringLiteral expr) { expr.type }
 
 	def package static INamedElement getResultType(STCallUnnamedArgument arg) { arg.argument?.resultType }
 
@@ -463,5 +466,18 @@ final package class ExpressionAnnotations {
 					second
 			}
 		}
+	}
+
+	def package static DataType commonSupertype(DataType first, DataType second) {
+		if (first === null)
+			second
+		else if (second === null)
+			first
+		else if (first.isAssignableFrom(second))
+			first
+		else if (second.isAssignableFrom(first))
+			second
+		else
+			null
 	}
 }

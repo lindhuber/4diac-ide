@@ -30,6 +30,7 @@ public final class Messages extends NLS {
 	public static String STCoreQuickfixProvider_AddExplicitTypecastLabel;
 	public static String STCoreQuickfixProvider_ChangeConversionDescription;
 	public static String STCoreQuickfixProvider_ChangeConversionLabel;
+	public static String STCoreQuickfixProvider_ChangePackage;
 	public static String STCoreQuickfixProvider_ChangeVariableCaseAsDeclaredDescription;
 	public static String STCoreQuickfixProvider_ChangeVariableCaseAsDeclaredLabel;
 	public static String STCoreQuickfixProvider_CreateImport;
@@ -43,8 +44,8 @@ public final class Messages extends NLS {
 	public static String STCoreQuickfixProvider_RemoveTrailingUnderscoreLabel;
 	public static String STCoreQuickfixProvider_RemoveUnnecessaryConversionDescription;
 	public static String STCoreQuickfixProvider_RemoveUnnecessaryConversionLabel;
-	public static String STCoreQuickfixProvider_RemoveUnnecessaryLiteralConversionDescription;
-	public static String STCoreQuickfixProvider_RemoveUnnecessaryLiteralConversionLabel;
+	public static String STCoreQuickfixProvider_RemoveLiteralConversionDescription;
+	public static String STCoreQuickfixProvider_RemoveLiteralConversionLabel;
 	public static String STCoreQuickfixProvider_RemoveImportDescription;
 	public static String STCoreQuickfixProvider_RemoveImportLabel;
 	public static String STCoreQuickfixProvider_RemoveInvalidExitStatementLabel;
@@ -52,6 +53,9 @@ public final class Messages extends NLS {
 	public static String STCoreQuickfixProvider_RemoveInvalidContinueStatementLabel;
 	public static String STCoreQuickfixProvider_RemoveInvalidContinueStatementDescription;
 	public static String STCoreQuickfixProvider_OrganizeImports;
+	public static String STCoreChangeConverter_LinkingErrors;
+	public static String STCoreChangeConverter_ReadOnly;
+	public static String STCoreChangeConverter_SyntaxErrors;
 	public static String STCoreCodeMiningPreferencePage_EnableCodeMinings;
 	public static String STCoreCodeMiningPreferencePage_EnableLiteralTypeCodeMinings;
 	public static String STCoreCodeMiningPreferencePage_EnableReferencedVariablesCodeMinings;
@@ -62,9 +66,11 @@ public final class Messages extends NLS {
 	public static String STCoreCustomValidatorConfigurationBlock_ForControlVariableNonTemporary;
 	public static String STCoreCustomValidatorConfigurationBlock_LiteralImplicitConversion;
 	public static String STCoreCustomValidatorConfigurationBlock_Literals;
+	public static String STCoreCustomValidatorConfigurationBlock_PackageNameMismatch;
 	public static String STCoreCustomValidatorConfigurationBlock_PotentialProgrammingProblems;
 	public static String STCoreCustomValidatorConfigurationBlock_StringIndexOutOfBounds;
 	public static String STCoreCustomValidatorConfigurationBlock_TruncatedStringLiteral;
+	public static String STCoreCustomValidatorConfigurationBlock_TruncatingLiteralConversion;
 	public static String STCoreCustomValidatorConfigurationBlock_UnnecessaryCode;
 	public static String STCoreCustomValidatorConfigurationBlock_UnnecessaryConversion;
 	public static String STCoreCustomValidatorConfigurationBlock_UnnecessaryLiteralConversion;
