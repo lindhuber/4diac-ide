@@ -43,6 +43,7 @@ import org.eclipse.fordiac.ide.model.libraryElement.FB;
 import org.eclipse.fordiac.ide.model.libraryElement.FBNetwork;
 import org.eclipse.fordiac.ide.model.libraryElement.FBNetworkElement;
 import org.eclipse.fordiac.ide.model.libraryElement.FBType;
+import org.eclipse.fordiac.ide.model.libraryElement.FunctionFBType;
 import org.eclipse.fordiac.ide.model.libraryElement.IInterfaceElement;
 import org.eclipse.fordiac.ide.model.libraryElement.INamedElement;
 import org.eclipse.fordiac.ide.model.libraryElement.InterfaceList;
@@ -293,6 +294,9 @@ public class ModelSearchQuery implements ISearchQuery {
 			}
 		}
 		if (modelQuerySpec.checkType()) {
+			if (modelElement instanceof FunctionFBType) {
+				return matchInST(modelElement);
+			}
 			if (modelElement instanceof final TypedConfigureableObject config) {
 				return compareStrings(config.getTypeName())
 						|| (config.getTypeEntry() != null && compareStrings(config.getTypeEntry().getFullTypeName()));
