@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.fordiac.ide.model.data.ArrayType;
 import org.eclipse.fordiac.ide.model.data.DataType;
 import org.eclipse.fordiac.ide.model.data.StructuredType;
+import org.eclipse.fordiac.ide.model.eval.EvaluatorPrepareException;
 import org.eclipse.fordiac.ide.model.eval.variable.VariableOperations;
 import org.eclipse.fordiac.ide.model.libraryElement.Algorithm;
 import org.eclipse.fordiac.ide.model.libraryElement.Application;
@@ -57,16 +58,19 @@ import org.eclipse.fordiac.ide.model.libraryElement.TypedConfigureableObject;
 import org.eclipse.fordiac.ide.model.libraryElement.VarDeclaration;
 import org.eclipse.fordiac.ide.model.search.ModelQuerySpec.SearchScope;
 import org.eclipse.fordiac.ide.ui.FordiacLogHelper;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.search2.internal.ui.SearchView;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 
 public class ModelSearchQuery implements ISearchQuery {
 
 	private final ModelQuerySpec modelQuerySpec;
 	private final ModelSearchPattern pattern;
 	private ModelSearchResult searchResult;
+	private boolean isIncompleteResult = false; // errors in resolved st code
 
 	public ModelSearchQuery(final ModelQuerySpec modelQuerySpec) {
 		this.modelQuerySpec = modelQuerySpec;
@@ -85,6 +89,13 @@ public class ModelSearchQuery implements ISearchQuery {
 
 		Display.getDefault()
 				.asyncExec(() -> ((SearchView) NewSearchUI.getSearchResultView()).showSearchResult(getSearchResult()));
+
+		if (isIncompleteResult) {
+			Display.getDefault()
+					.asyncExec(() -> MessageDialog.openWarning(
+							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+							Messages.STSearchErrorDialog_Title, Messages.STSearchErrorDialog_Body));
+		}
 
 		return Status.OK_STATUS;
 	}
@@ -320,10 +331,14 @@ public class ModelSearchQuery implements ISearchQuery {
 	private boolean matchInST(final INamedElement modelElement) {
 		final String text = getImplText(modelElement);
 		if (text == null || pattern.preScanST(text)) {
-			for (final String fqn : VariableOperations.getAllDependencies(modelElement)) {
-				if (compareStrings(fqn)) {
-					return true;
+			try {
+				for (final String fqn : VariableOperations.getAllDependencies(modelElement)) {
+					if (compareStrings(fqn)) {
+						return true;
+					}
 				}
+			} catch (final EvaluatorPrepareException e) {
+				isIncompleteResult = true;
 			}
 		}
 		return false;
