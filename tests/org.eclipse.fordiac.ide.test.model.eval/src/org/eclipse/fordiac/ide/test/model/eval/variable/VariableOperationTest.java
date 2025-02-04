@@ -258,16 +258,15 @@ class VariableOperationTest extends AbstractEvaluatorTest {
 		assertVariableEquals("TestDerivedType1", toDIntValue(0), VariableOperations.newVariable(directlyDerivedType1));
 		assertVariableEquals("TestDerivedType2", toDIntValue(17), VariableOperations.newVariable(directlyDerivedType2));
 		assertVariableEquals("TestDerivedType3", toDIntValue(21), VariableOperations.newVariable(directlyDerivedType3));
-		assertEquals("The variable error is undefined",
-				assertThrows(IllegalArgumentException.class, () -> VariableOperations.newVariable(directlyDerivedType4))
-						.getMessage());
+		assertEquals("The variable error is undefined", assertThrows(EvaluatorPrepareException.class,
+				() -> VariableOperations.newVariable(directlyDerivedType4)).getMessage());
 	}
 
 	@Test
 	void testNewVariableForDirectlyDerivedTypeWithValue() {
 		assertVariableEquals("TestDerivedType1", toDIntValue(1),
 				VariableOperations.newVariable(directlyDerivedType1, "1"));
-		assertEquals("The variable error is undefined", assertThrows(IllegalArgumentException.class,
+		assertEquals("The variable error is undefined", assertThrows(EvaluatorPrepareException.class,
 				() -> VariableOperations.newVariable(directlyDerivedType1, "error")).getMessage());
 	}
 
@@ -450,7 +449,7 @@ class VariableOperationTest extends AbstractEvaluatorTest {
 		assertEquals(toDIntValue(0), VariableOperations.evaluateValue(ElementaryTypes.DINT, ""));
 		assertEquals(toDIntValue(17), VariableOperations.evaluateValue(ElementaryTypes.DINT, "17"));
 		assertEquals(toDIntValue(21), VariableOperations.evaluateValue(ElementaryTypes.DINT, "17+4"));
-		assertEquals("The variable error is undefined", assertThrows(IllegalArgumentException.class,
+		assertEquals("The variable error is undefined", assertThrows(EvaluatorPrepareException.class,
 				() -> VariableOperations.evaluateValue(ElementaryTypes.DINT, "error")).getMessage());
 	}
 
@@ -476,8 +475,7 @@ class VariableOperationTest extends AbstractEvaluatorTest {
 	@Test
 	void testGetDependenciesForAttribute() {
 		assertEquals(Set.of("TestStructAttribute"), VariableOperations.getDependencies(attribute1));
-		assertEquals(Set.of("TestStructAttribute", "TestStructAttribute::TestStructAttribute"),
-				VariableOperations.getDependencies(attribute2));
+		assertEquals(Set.of("TestStructAttribute"), VariableOperations.getDependencies(attribute2));
 		assertEquals(Set.of("TestDerivedAttribute"), VariableOperations.getDependencies(attribute3));
 		assertEquals(Set.of("TestDerivedAttribute"), VariableOperations.getDependencies(attribute4));
 	}
