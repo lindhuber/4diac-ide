@@ -23,9 +23,11 @@ import org.eclipse.fordiac.ide.model.typelibrary.TypeEntry;
 import org.eclipse.fordiac.ide.ui.FordiacLogHelper;
 import org.eclipse.fordiac.ide.ui.editors.EditorFilter;
 import org.eclipse.fordiac.ide.ui.editors.EditorUtils;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
+import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.ui.IEditorPart;
 
 public enum QualNameChangeListenerManager implements CommandStackEventListener {
@@ -66,16 +68,24 @@ public enum QualNameChangeListenerManager implements CommandStackEventListener {
 	@Override
 	public void stackChanged(final CommandStackEvent event) {
 
+		if (event.getCommand() instanceof final CompoundCommand cmd) {
+			for (final Command c : cmd.getCommands()) {
+				final CommandStack stack = (CommandStack) event.getSource();
+				stackChanged(new CommandStackEvent(stack, c, event.getDetail()));
+			}
+			return;
+		}
+
 		if (event.getCommand() instanceof final QualNameAffectedCommand cmd) {
 			switch (event.getDetail()) {
 			case CommandStack.POST_EXECUTE:
-				notifyListenersExecute(cmd.getQualNameChange(QualNameChangeState.RENAME));
+				notifyListenersExecute(cmd.getQualNameChanges(QualNameChangeState.RENAME));
 				break;
 			case CommandStack.POST_UNDO:
-				notifyListenersUndo(cmd.getQualNameChange(QualNameChangeState.RENAME_UNDO));
+				notifyListenersUndo(cmd.getQualNameChanges(QualNameChangeState.RENAME_UNDO));
 				break;
 			case CommandStack.POST_REDO:
-				notifyListenersRedo(cmd.getQualNameChange(QualNameChangeState.RENAME_REDO));
+				notifyListenersRedo(cmd.getQualNameChanges(QualNameChangeState.RENAME_REDO));
 				break;
 
 			default:
@@ -114,19 +124,19 @@ public enum QualNameChangeListenerManager implements CommandStackEventListener {
 
 	}
 
-	public void notifyListenersExecute(final QualNameChange qualNameChange) {
+	public void notifyListenersExecute(final List<QualNameChange> qualNameChange) {
 		for (final QualNameChangeListener listener : listeners) {
 			listener.onCommandExecuted(qualNameChange);
 		}
 	}
 
-	public void notifyListenersUndo(final QualNameChange qualNameChange) {
+	public void notifyListenersUndo(final List<QualNameChange> qualNameChange) {
 		for (final QualNameChangeListener listener : listeners) {
 			listener.onCommandUndoExecuted(qualNameChange);
 		}
 	}
 
-	public void notifyListenersRedo(final QualNameChange qualNameChange) {
+	public void notifyListenersRedo(final List<QualNameChange> qualNameChange) {
 		for (final QualNameChangeListener listener : listeners) {
 			listener.onCommandRedoExecuted(qualNameChange);
 		}
