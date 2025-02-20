@@ -63,6 +63,7 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
 	private Text query;
 	private Button caseSensitive;
 	private Button exactNameMatching;
+	private Button interfaceValueMatching;
 	private Button projectScope;
 	private IProject curProject;
 
@@ -127,6 +128,8 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
 
 		caseSensitive = WidgetFactory.button(SWT.CHECK).text(Messages.CaseSensitive).create(composite);
 		exactNameMatching = WidgetFactory.button(SWT.CHECK).text(Messages.ExactNameMatching).create(composite);
+		interfaceValueMatching = WidgetFactory.button(SWT.CHECK).text(Messages.TypeInterfaceValueMatching)
+				.create(composite);
 
 		final Group radioButtonScope = new Group(composite, SWT.NONE);
 		radioButtonScope.setLayout(new RowLayout(SWT.VERTICAL));
@@ -160,6 +163,7 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
 		final boolean isCheckedComment = comment.getSelection();
 		final boolean isCaseSensitive = caseSensitive.getSelection();
 		final boolean isExactNameMatching = exactNameMatching.getSelection();
+		final boolean isInterfaceValueMatching = interfaceValueMatching.getSelection();
 
 		// Search string aka the name of it
 		final String searchString = query.getText();
@@ -177,7 +181,7 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
 					isCheckedComment,
 					isCaseSensitive,
 					isExactNameMatching,
-					false,
+					isInterfaceValueMatching,
 					getScope(),
 					curProject);
 			// @formatter:on

@@ -36,6 +36,7 @@ public final class Messages extends NLS {
 	public static String Jokers;
 	public static String CaseSensitive;
 	public static String ExactNameMatching;
+	public static String TypeInterfaceValueMatching;
 	public static String Scope;
 	public static String WorkspaceScope;
 	public static String Warning;
