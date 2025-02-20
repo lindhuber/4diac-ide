@@ -40,6 +40,7 @@ public class GlobalConstantsFindReferencesHandler extends FindReferencesHandler 
 					false,
 					false,
 					true,
+					true, // search initial value
 					SearchScope.PROJECT,
 					getProject(varDec));
 			// @formatter:on

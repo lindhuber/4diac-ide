@@ -50,6 +50,7 @@ public class SearchTypeReferences extends AbstractHandler {
 					false,
 					false,
 					true,
+					false,
 					SearchScope.PROJECT,
 					typeEntry.getFile().getProject());
 			// @formatter:on

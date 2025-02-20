@@ -23,6 +23,7 @@ public record ModelQuerySpec(
 	    boolean checkComments,
 	    boolean checkCaseSensitive,
 	    boolean checkExactMatching,
+	    boolean checkInterfaceValues,
 	    SearchScope scope,
 	    IProject project
 ) {

@@ -177,6 +177,7 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
 					isCheckedComment,
 					isCaseSensitive,
 					isExactNameMatching,
+					false,
 					getScope(),
 					curProject);
 			// @formatter:on

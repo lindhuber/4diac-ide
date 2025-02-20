@@ -18,6 +18,7 @@ package org.eclipse.fordiac.ide.model.search;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.eclipse.core.resources.IProject;
@@ -265,7 +266,7 @@ public class ModelSearchQuery implements ISearchQuery {
 		}
 
 		if (elem instanceof final FBType type && type.getInterfaceList() != null) {
-			searchInterface(type.getInterfaceList(), monitor);
+			searchTypeInterface(type.getInterfaceList(), monitor);
 		}
 		return matchEObject(elem, monitor);
 	}
@@ -282,11 +283,44 @@ public class ModelSearchQuery implements ISearchQuery {
 		}
 	}
 
+	private void searchTypeInterface(final InterfaceList interfaceList, final IProgressMonitor monitor) {
+		// @formatter:off
+		Stream.of(
+	            interfaceList.getInputs(),
+	            interfaceList.getOutputVars().stream(),
+	            interfaceList.getEventOutputs().stream(),
+	            interfaceList.getPlugs().stream()
+	    )
+	    .flatMap(Function.identity())
+	    .filter(modelElement ->
+	            (modelQuerySpec.checkInterfaceValues() && searchInterfaceValue(modelElement))
+	            || matchEObject(modelElement, monitor)
+	    )
+	    .forEach(searchResult::addResult);
+		// @formatter:on
+	}
+
+	private boolean searchInterfaceValue(final INamedElement modelElement) {
+		if (modelElement instanceof final VarDeclaration varDecl) {
+			final var value = varDecl.getValue();
+			return value != null && !value.getValue().isEmpty()
+					&& value.getValue().contains(modelQuerySpec.searchString());
+		}
+		return false;
+	}
+
 	private void searchInterface(final InterfaceList interfaceList, final IProgressMonitor monitor) {
-		Stream.concat(Stream.concat(interfaceList.getInputs(), interfaceList.getOutputVars().stream()),
-				Stream.concat(interfaceList.getEventOutputs().stream(), interfaceList.getPlugs().stream()))
-				.filter((final INamedElement modelElement) -> this.matchEObject(modelElement, monitor))
-				.forEach(searchResult::addResult);
+		// @formatter:off
+		Stream.of(
+	            interfaceList.getInputs(),
+	            interfaceList.getOutputVars().stream(),
+	            interfaceList.getEventOutputs().stream(),
+	            interfaceList.getPlugs().stream()
+	    )
+	    .flatMap(Function.identity())
+		.filter((final INamedElement modelElement) -> this.matchEObject(modelElement, monitor))
+		.forEach(searchResult::addResult);
+		// @formatter:on
 	}
 
 	private boolean matchEObject(final INamedElement modelElement, final IProgressMonitor monitor) {
